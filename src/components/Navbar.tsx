@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { Link } from "react-router"
 import { Menu, X } from "lucide-react"
+import { useAuth } from "../context/AuthContext"
 
 /* Navigation bar links */
 const navLinks = [
@@ -15,13 +16,14 @@ const navLinks = [
 export const Navbar = () => {
     /* use state section */
     const [menuOpen, setMenuOpen] = useState(false)
-
+    /* Toggle mobile menu */
     const toggleMenu = () => {
         setMenuOpen((prev) => !prev)
     }
-
+    /* Authentification */
+    const { signInWithGitHub, signOut, user } = useAuth()
+    const displayName = user?.user_metadata.user_name || user?.email
     return (
-        // The main nav bar is fixed at the top
         <nav className="fixed top-0 w-full z-40 bg-[rgba(10,10,10,0.8)] backdrop-blur-lg border-b border-white/10 shadow-lg">
             <div className="max-w-5xl mx-auto px-4">
                 <div className="flex justify-between items-center h-16">
@@ -66,6 +68,29 @@ export const Navbar = () => {
                         </button>
                     </div>
                 </div>
+            </div>
+
+            {/* Desktop Auth */}
+            <div>
+                {user
+                    ? (
+                        <div>
+                            <span>{displayName}</span>
+                            <button
+                                onClick={signOut}>
+                                Sign out
+                            </button>
+
+                        </div>
+                    )
+                    : (
+                        <button
+                            onClick={signInWithGitHub}>
+                            Sign in with Github
+                        </button>
+
+                    )
+                }
             </div>
 
             {/* Mobile navigation bar */}
