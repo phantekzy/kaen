@@ -57,7 +57,7 @@ export const Navbar = () => {
                                 alt="Logo"
                                 width={45}
                                 height={45}
-                                className="relative rounded-lg w-[45px] h-[45px] object-cover border border-white/10 bg-black"
+                                className="relative rounded-lg w-[45] h-[45] object-cover border border-white/10 bg-black"
                             />
                         </div>
                         <div className="flex flex-col leading-none">
