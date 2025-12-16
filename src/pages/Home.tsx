@@ -7,11 +7,11 @@ export const Home = () => {
     const mousePos = useMousePosition();
     const isMobile = useMediaQuery({ maxWidth: 639 });
 
-    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 2.4)) : icons;
+    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 4)) : icons;
 
     const ICON_COUNT = displayedIcons.length;
     const TOP_PADDING = 1;
-    const BOTTOM_PADDING = 41;
+    const BOTTOM_PADDING = 42;
 
     const getMobilePosition = (index: number) => {
         const step = (BOTTOM_PADDING - TOP_PADDING) / Math.max(ICON_COUNT - 1, 1);
