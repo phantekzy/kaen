@@ -6,8 +6,9 @@ import { icons } from "../utils/icons";
 export const Home = () => {
     const mousePos = useMousePosition();
     const isMobile = useMediaQuery({ maxWidth: 639 });
+    const isTablet = useMediaQuery({ minWidth: 640, maxWidth: 1419 });
 
-    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 4)) : icons;
+    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 2)) : icons;
 
     const ICON_COUNT = displayedIcons.length;
     const TOP_PADDING = 1;
@@ -22,7 +23,7 @@ export const Home = () => {
     };
 
     return (
-        <div className={isMobile ? "overflow-x-hidden" : ""}>
+        <div className={isMobile || isTablet ? "overflow-x-hidden" : ""}>
             <section className="relative min-h-screen w-full">
                 <div className="absolute inset-0 z-0 pointer-events-none">
                     <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/10"></div>
@@ -31,7 +32,7 @@ export const Home = () => {
                         <AnimatedIcon
                             key={index}
                             Icon={icon.Icon}
-                            size={isMobile ? icon.size * 0.4 : icon.size}
+                            size={isMobile ? icon.size * 0.3 : icon.size}
                             opacity={icon.opacity}
                             position={isMobile ? getMobilePosition(index) : icon.position}
                             depth={isMobile ? 0 : icon.depth}
