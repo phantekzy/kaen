@@ -10,7 +10,7 @@ export const Home = () => {
     const isMobile = useMediaQuery({ maxWidth: 639 });
 
     // Show fewer icons on mobile
-    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 2)) : icons;
+    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 5)) : icons;
 
     return (
         <div className={isMobile ? "overflow-x-hidden" : ""}>
