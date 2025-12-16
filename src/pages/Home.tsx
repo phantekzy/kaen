@@ -1,4 +1,4 @@
-/* Import section */
+/* import section */
 import { useMediaQuery } from "react-responsive";
 import AnimatedIcon from "../components/AnimatedIcon";
 import { useMousePosition } from "../hooks/useMousePosition";
@@ -48,8 +48,8 @@ export const Home = () => {
                     <div className="mt-4 sm:mt-6 w-full flex justify-center">
                         <button className="group relative inline-flex items-center justify-center 
                                        px-4 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold text-white 
-                                       rounded-full transition-all duration-300 ease-in-out 
-                                       bg-blue-600 hover:bg-blue-500 overflow-hidden w-full max-w-xs">
+                                       rounded-lg transition-all duration-300 ease-in-out 
+                                       bg-blue-600 hover:bg-blue-500 overflow-hidden w-fit ">
                             <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-violet-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
                             <span className="relative z-10 tracking-wide text-center">Join the Community</span>
                             <span className="absolute right-0 w-6 h-24 sm:w-8 sm:h-32 -mt-12 transition-all duration-1000 transform translate-x-10 bg-white opacity-10 rotate-12 group-hover:translate-x-0"></span>
