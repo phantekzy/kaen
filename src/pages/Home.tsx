@@ -41,27 +41,26 @@ export const Home = () => {
                     ))}
                 </div>
 
-                <main className="relative z-10 flex flex-col items-center pt-16 sm:pt-32 pb-16 px-4 sm:px-6 space-y-1 sm:space-y-4 mx-auto w-full max-w-full">
-                    <h1 className="text-4xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold text-center leading-snug sm:leading-[1.1] w-full max-w-lg sm:max-w-4xl">
+                <main className="relative z-10 flex flex-col items-center pt-16 sm:pt-32 pb-16 space-y-1 sm:space-y-4 mx-auto w-full max-w-full">
+                    <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-center leading-snug sm:leading-[1.1] w-full ">
                         Build together
                     </h1>
-                    <h1 className="text-pink-600 text-4xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold text-center">
+                    <h1 className="text-pink-600 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-center w-full whitespace-nowrap">
                         shine alone
                     </h1>
-
-                    <p className="text-sm sm:text-lg md:text-xl text-gray-300 text-center pt-6 sm:pt-2 w-full max-w-md sm:max-w-3xl">
+                    <p className="text-sm sm:text-lg md:text-xl text-gray-300 text-center pt-6 sm:pt-2 w-full max-w-md sm:max-w-3xl px-4">
                         The dedicated platform for high-signal technical exchange. Resolve complex problems and share expertise in a focused, zero-noise environment.
                     </p>
 
                     <div className="mt-4 sm:mt-6 w-full flex justify-center">
                         <button className="group relative inline-flex items-center justify-center 
-                               px-4 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold text-white 
-                               rounded-lg transition-all duration-300 ease-in-out 
-                               bg-pink-600 hover:bg-pink-900 overflow-hidden w-fit">
+                            px-4 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold text-white 
+                            rounded-lg transition-all duration-300 ease-in-out 
+                            bg-pink-600 hover:bg-pink-900 overflow-hidden w-fit">
                             <span className="absolute inset-0 bg-gradient-to-r from-pink-900 to-pink-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
                             <span className="relative z-10 tracking-wide text-center">Get Started</span>
                             <span className="absolute right-0 w-6 h-24 sm:w-8 sm:h-32 -mt-12 transition-all duration-1000 transform translate-x-10 
-                                             bg-white opacity-10 rotate-12 group-hover:translate-x-0"></span>
+                            bg-white opacity-10 rotate-12 group-hover:translate-x-0"></span>
                         </button>
                     </div>
                 </main>

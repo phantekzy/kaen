@@ -51,7 +51,7 @@ export const Navbar = () => {
                         to={"/"}
                     >
                         <div className="relative">
-                            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 to-violet-600 blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
+                            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-pink-400 to-pink-600 blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
                             <img
                                 src="/logo.png"
                                 alt="Logo"
@@ -64,7 +64,7 @@ export const Navbar = () => {
                             <p className="tracking-tighter text-lg">
                                 K<span className="text-pink-600">ae</span>n
                             </p>
-                            <span className="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-blue-400 transition-colors">
+                            <span className="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-pink-600 transition-colors">
                                 Community
                             </span>
                         </div>
