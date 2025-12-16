@@ -31,18 +31,15 @@ interface IconConfig {
   size: number;
   opacity: number;
   position: { top: string; left: string };
-  mobilePosition?: { top: string; left: string };
   depth: number;
 }
 
 export const icons: IconConfig[] = [
-  // Layer 1
   {
     Icon: FaReact,
     size: 120,
     opacity: 0.1,
     position: { top: "5%", left: "1%" },
-    mobilePosition: { top: "3%", left: "5%" },
     depth: 5,
   },
   {
@@ -50,7 +47,6 @@ export const icons: IconConfig[] = [
     size: 80,
     opacity: 0.12,
     position: { top: "15%", left: "95%" },
-    mobilePosition: { top: "10%", left: "90%" },
     depth: 7,
   },
   {
@@ -58,7 +54,6 @@ export const icons: IconConfig[] = [
     size: 150,
     opacity: 0.08,
     position: { top: "60%", left: "5%" },
-    mobilePosition: { top: "55%", left: "1%" },
     depth: 4,
   },
   {
@@ -66,7 +61,6 @@ export const icons: IconConfig[] = [
     size: 90,
     opacity: 0.1,
     position: { top: "85%", left: "50%" },
-    mobilePosition: { top: "80%", left: "50%" },
     depth: 6,
   },
   {
@@ -74,7 +68,6 @@ export const icons: IconConfig[] = [
     size: 70,
     opacity: 0.12,
     position: { top: "10%", left: "70%" },
-    mobilePosition: { top: "15%", left: "65%" },
     depth: 5,
   },
   {
@@ -82,7 +75,6 @@ export const icons: IconConfig[] = [
     size: 100,
     opacity: 0.08,
     position: { top: "40%", left: "30%" },
-    mobilePosition: { top: "35%", left: "40%" },
     depth: 4,
   },
   {
@@ -90,7 +82,6 @@ export const icons: IconConfig[] = [
     size: 180,
     opacity: 0.05,
     position: { top: "50%", left: "90%" },
-    mobilePosition: { top: "45%", left: "95%" },
     depth: 3,
   },
   {
@@ -98,7 +89,6 @@ export const icons: IconConfig[] = [
     size: 90,
     opacity: 0.1,
     position: { top: "70%", left: "15%" },
-    mobilePosition: { top: "65%", left: "10%" },
     depth: 7,
   },
   {
@@ -106,7 +96,6 @@ export const icons: IconConfig[] = [
     size: 70,
     opacity: 0.12,
     position: { top: "25%", left: "55%" },
-    mobilePosition: { top: "20%", left: "50%" },
     depth: 5,
   },
   {
@@ -114,17 +103,13 @@ export const icons: IconConfig[] = [
     size: 110,
     opacity: 0.09,
     position: { top: "80%", left: "75%" },
-    mobilePosition: { top: "75%", left: "85%" },
     depth: 6,
   },
-
-  // Layer 2
   {
     Icon: FaNodeJs,
     size: 110,
     opacity: 0.2,
     position: { top: "35%", left: "5%" },
-    mobilePosition: { top: "30%", left: "15%" },
     depth: 15,
   },
   {
@@ -132,7 +117,6 @@ export const icons: IconConfig[] = [
     size: 95,
     opacity: 0.18,
     position: { top: "75%", left: "25%" },
-    mobilePosition: { top: "70%", left: "30%" },
     depth: 13,
   },
   {
@@ -140,7 +124,6 @@ export const icons: IconConfig[] = [
     size: 70,
     opacity: 0.22,
     position: { top: "1%", left: "40%" },
-    mobilePosition: { top: "5%", left: "40%" },
     depth: 16,
   },
   {
@@ -148,7 +131,6 @@ export const icons: IconConfig[] = [
     size: 130,
     opacity: 0.15,
     position: { top: "90%", left: "60%" },
-    mobilePosition: { top: "85%", left: "70%" },
     depth: 14,
   },
   {
@@ -156,7 +138,6 @@ export const icons: IconConfig[] = [
     size: 80,
     opacity: 0.2,
     position: { top: "50%", left: "65%" },
-    mobilePosition: { top: "45%", left: "75%" },
     depth: 17,
   },
   {
@@ -164,7 +145,6 @@ export const icons: IconConfig[] = [
     size: 100,
     opacity: 0.16,
     position: { top: "65%", left: "40%" },
-    mobilePosition: { top: "60%", left: "45%" },
     depth: 15,
   },
   {
@@ -172,7 +152,6 @@ export const icons: IconConfig[] = [
     size: 75,
     opacity: 0.2,
     position: { top: "15%", left: "20%" },
-    mobilePosition: { top: "25%", left: "25%" },
     depth: 18,
   },
   {
@@ -180,7 +159,6 @@ export const icons: IconConfig[] = [
     size: 90,
     opacity: 0.17,
     position: { top: "45%", left: "95%" },
-    mobilePosition: { top: "50%", left: "80%" },
     depth: 12,
   },
   {
@@ -188,7 +166,6 @@ export const icons: IconConfig[] = [
     size: 60,
     opacity: 0.25,
     position: { top: "95%", left: "10%" },
-    mobilePosition: { top: "90%", left: "5%" },
     depth: 16,
   },
   {
@@ -196,17 +173,13 @@ export const icons: IconConfig[] = [
     size: 80,
     opacity: 0.18,
     position: { top: "30%", left: "80%" },
-    mobilePosition: { top: "35%", left: "60%" },
     depth: 14,
   },
-
-  // Layer 3
   {
     Icon: FaJs,
     size: 50,
     opacity: 0.3,
     position: { top: "20%", left: "10%" },
-    mobilePosition: { top: "30%", left: "5%" },
     depth: 25,
   },
   {
@@ -214,7 +187,6 @@ export const icons: IconConfig[] = [
     size: 60,
     opacity: 0.25,
     position: { top: "70%", left: "60%" },
-    mobilePosition: { top: "75%", left: "75%" },
     depth: 22,
   },
   {
@@ -222,7 +194,6 @@ export const icons: IconConfig[] = [
     size: 40,
     opacity: 0.35,
     position: { top: "80%", left: "5%" },
-    mobilePosition: { top: "85%", left: "15%" },
     depth: 28,
   },
   {
@@ -230,7 +201,6 @@ export const icons: IconConfig[] = [
     size: 70,
     opacity: 0.28,
     position: { top: "5%", left: "85%" },
-    mobilePosition: { top: "10%", left: "80%" },
     depth: 20,
   },
   {
@@ -238,7 +208,6 @@ export const icons: IconConfig[] = [
     size: 55,
     opacity: 0.32,
     position: { top: "80%", left: "30%" },
-    mobilePosition: { top: "80%", left: "35%" },
     depth: 26,
   },
   {
@@ -246,7 +215,6 @@ export const icons: IconConfig[] = [
     size: 45,
     opacity: 0.38,
     position: { top: "40%", left: "25%" },
-    mobilePosition: { top: "40%", left: "20%" },
     depth: 24,
   },
   {
@@ -254,7 +222,6 @@ export const icons: IconConfig[] = [
     size: 65,
     opacity: 0.28,
     position: { top: "60%", left: "70%" },
-    mobilePosition: { top: "65%", left: "65%" },
     depth: 21,
   },
   {
@@ -262,7 +229,6 @@ export const icons: IconConfig[] = [
     size: 50,
     opacity: 0.3,
     position: { top: "10%", left: "30%" },
-    mobilePosition: { top: "15%", left: "30%" },
     depth: 27,
   },
   {
@@ -270,7 +236,6 @@ export const icons: IconConfig[] = [
     size: 70,
     opacity: 0.25,
     position: { top: "65%", left: "95%" },
-    mobilePosition: { top: "70%", left: "90%" },
     depth: 23,
   },
   {
@@ -278,7 +243,6 @@ export const icons: IconConfig[] = [
     size: 40,
     opacity: 0.33,
     position: { top: "95%", left: "90%" },
-    mobilePosition: { top: "90%", left: "80%" },
     depth: 29,
   },
 ];
