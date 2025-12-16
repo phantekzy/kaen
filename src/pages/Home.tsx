@@ -41,14 +41,15 @@ export const Home = () => {
                     ))}
                 </div>
 
-                <main className="relative z-10 flex flex-col items-center pt-16 sm:pt-32 pb-16 px-4 sm:px-6 space-y-6 sm:space-y-10 mx-auto w-full max-w-full">
-                    <h1 className="text-3xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold text-center leading-snug sm:leading-[1.1] w-full max-w-lg sm:max-w-4xl">
-                        Where developers <span className="text-blue-400">collaborate</span>,
-                        <span className="text-violet-400"> innovate</span>,
-                        <span className="text-emerald-400"> and build</span>.
+                <main className="relative z-10 flex flex-col items-center pt-16 sm:pt-32 pb-16 px-4 sm:px-6 space-y-1 sm:space-y-4 mx-auto w-full max-w-full">
+                    <h1 className="text-4xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold text-center leading-snug sm:leading-[1.1] w-full max-w-lg sm:max-w-4xl">
+                        Build together
+                    </h1>
+                    <h1 className="text-pink-600 text-4xl sm:text-3xl md:text-5xl lg:text-7xl font-extrabold text-center">
+                        shine alone
                     </h1>
 
-                    <p className="text-sm sm:text-lg md:text-xl text-gray-300 text-center w-full max-w-md sm:max-w-3xl">
+                    <p className="text-sm sm:text-lg md:text-xl text-gray-300 text-center pt-6 sm:pt-2 w-full max-w-md sm:max-w-3xl">
                         The dedicated platform for high-signal technical exchange. Resolve complex problems and share expertise in a focused, zero-noise environment.
                     </p>
 
@@ -56,10 +57,11 @@ export const Home = () => {
                         <button className="group relative inline-flex items-center justify-center 
                                px-4 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-semibold text-white 
                                rounded-lg transition-all duration-300 ease-in-out 
-                               bg-blue-600 hover:bg-blue-500 overflow-hidden w-fit">
-                            <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-violet-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
-                            <span className="relative z-10 tracking-wide text-center">Join the Community</span>
-                            <span className="absolute right-0 w-6 h-24 sm:w-8 sm:h-32 -mt-12 transition-all duration-1000 transform translate-x-10 bg-white opacity-10 rotate-12 group-hover:translate-x-0"></span>
+                               bg-pink-600 hover:bg-pink-900 overflow-hidden w-fit">
+                            <span className="absolute inset-0 bg-gradient-to-r from-pink-900 to-pink-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
+                            <span className="relative z-10 tracking-wide text-center">Get Started</span>
+                            <span className="absolute right-0 w-6 h-24 sm:w-8 sm:h-32 -mt-12 transition-all duration-1000 transform translate-x-10 
+                                             bg-white opacity-10 rotate-12 group-hover:translate-x-0"></span>
                         </button>
                     </div>
                 </main>

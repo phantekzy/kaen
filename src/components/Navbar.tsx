@@ -62,7 +62,7 @@ export const Navbar = () => {
                         </div>
                         <div className="flex flex-col leading-none">
                             <p className="tracking-tighter text-lg">
-                                K<span className="text-blue-400">ae</span>n
+                                K<span className="text-pink-600">ae</span>n
                             </p>
                             <span className="text-[10px] text-gray-500 font-normal uppercase tracking-widest group-hover:text-blue-400 transition-colors">
                                 Community
@@ -100,7 +100,7 @@ export const Navbar = () => {
                         {user ? (
                             <div className="flex items-center gap-3 pl-4 border-l border-white/10">
                                 <div className="text-right hidden lg:block">
-                                    <p className="text-xs text-blue-400 font-medium">Online</p>
+                                    <p className="text-xs text-pink-600 font-medium">Online</p>
                                     <p className="text-sm text-gray-200 font-medium max-w-[100px] truncate">
                                         {displayName}
                                     </p>
@@ -133,7 +133,7 @@ export const Navbar = () => {
                             >
                                 <Github size={18} />
                                 <span>Sign In</span>
-                                <div className="absolute inset-0 rounded-full ring-2 ring-white/20 group-hover:ring-blue-500/50 transition-all duration-300" />
+                                <div className="absolute inset-0 rounded-full ring-2 ring-white/20 group-hover:ring-pink-600/80 transition-all duration-300" />
                             </button>
                         )}
                     </div>
@@ -177,7 +177,7 @@ export const Navbar = () => {
                                     <Link
                                         to={link}
                                         className={`flex items-center justify-between p-4 rounded-xl transition-all ${location.pathname === link
-                                            ? "bg-blue-600/10 border border-blue-500/30 text-blue-400"
+                                            ? "bg-pink-600/10 border border-pink-600/30 text-pink-500"
                                             : "bg-white/5 border border-white/5 text-gray-300 hover:bg-white/10"
                                             }`}
                                     >
@@ -193,7 +193,7 @@ export const Navbar = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.3 }}
                                     onClick={signInWithGitHub}
-                                    className="w-full mt-4 flex items-center justify-center gap-2 p-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition-colors"
+                                    className="w-full mt-4 flex items-center justify-center gap-2 p-4 rounded-xl bg-pink-700 text-white font-bold hover:bg-pink-500 transition-colors"
                                 >
                                     <Github size={20} />
                                     Sign In with GitHub
