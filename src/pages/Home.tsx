@@ -7,11 +7,11 @@ export const Home = () => {
     const mousePos = useMousePosition();
     const isMobile = useMediaQuery({ maxWidth: 639 });
 
-    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 1.9)) : icons;
+    const displayedIcons = isMobile ? icons.slice(0, Math.ceil(icons.length / 2.4)) : icons;
 
     const ICON_COUNT = displayedIcons.length;
     const TOP_PADDING = 1;
-    const BOTTOM_PADDING = 82;
+    const BOTTOM_PADDING = 41;
 
     const getMobilePosition = (index: number) => {
         const step = (BOTTOM_PADDING - TOP_PADDING) / Math.max(ICON_COUNT - 1, 1);
@@ -31,7 +31,7 @@ export const Home = () => {
                         <AnimatedIcon
                             key={index}
                             Icon={icon.Icon}
-                            size={isMobile ? icon.size * 0.6 : icon.size}
+                            size={isMobile ? icon.size * 0.4 : icon.size}
                             opacity={icon.opacity}
                             position={isMobile ? getMobilePosition(index) : icon.position}
                             depth={isMobile ? 0 : icon.depth}
