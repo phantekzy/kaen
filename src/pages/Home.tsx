@@ -45,7 +45,7 @@ export const Home = () => {
                     <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-center leading-snug sm:leading-[1.1] w-full ">
                         Build together
                     </h1>
-                    <h1 className="text-pink-600 text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-center w-full whitespace-nowrap">
+                    <h1 className="text-pink-600 text-5xl sm:text-7xl md:text-8xl lg:text-8xl font-extrabold text-center w-full whitespace-nowrap">
                         shine alone
                     </h1>
                     <p className="text-sm sm:text-lg md:text-xl text-gray-300 text-center pt-6 sm:pt-2 w-full max-w-md sm:max-w-3xl px-4">
@@ -65,18 +65,6 @@ export const Home = () => {
                     </div>
                 </main>
 
-                <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-6">Testimonials</h2>
-                    <p className="text-gray-300 mb-4">
-                        "This platform helped me level up my coding skills!" – Developer A
-                    </p>
-                    <p className="text-gray-300 mb-4">
-                        "I love collaborating with like-minded engineers here." – Developer B
-                    </p>
-                    <p className="text-gray-300">
-                        "A zero-noise environment is exactly what I needed." – Developer C
-                    </p>
-                </div>
             </section>
 
             <section className="bg-black text-white py-16 sm:py-20">
