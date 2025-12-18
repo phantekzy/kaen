@@ -1,33 +1,60 @@
 /* Import section */
 import { useMutation } from "@tanstack/react-query"
-import React, { useState, type ReactEventHandler } from "react"
+import React, { useState, type ChangeEvent } from "react"
 import { supabase } from "../supabase-client";
 
 interface PostInput {
     title: string;
     content: string;
 }
+const createPost = async (post: PostInput, imageFile: File) => {
+    /* Images */
+    const filePath = `${post.title}-${Date.now()}-${imageFile.name}`
 
-const createPost = async (post: PostInput) => {
-    const { } = await supabase
+    const { error: uploadError } = await supabase.storage
+        .from('post-images')
+        .upload(filePath, imageFile)
+
+    if (uploadError) throw new Error(uploadError.message)
+
+    /* Posts */
+    const { data, error } = await supabase
         .from('posts')
         .insert(post)
+
+    if (error) throw new Error(error.message)
+
+    return data
 }
-
-
 
 /* Create post section */
 export const CreatePost = () => {
-    /* State */
+    /* States */
     const [title, setTitle] = useState<string>('')
     const [content, setContent] = useState<string>('')
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
     /* React query  */
-    const { } = useMutation({ mutationFn: createPost })
+    const { mutate } = useMutation({
+        mutationFn: (data: { post: PostInput, imageFile: File }) => {
+            return createPost(data.post, data.imageFile)
+        }
+    })
+
     /* Submit helper */
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
+        if (!selectedFile) return
+        mutate({ post: { title, content }, imageFile: selectedFile })
     }
-    return <form>
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setSelectedFile(e.target.files[0])
+        }
+    }
+
+    return <form onSubmit={handleSubmit}>
         {/* Title */}
         <div>
             <label>Title</label>
@@ -43,6 +70,16 @@ export const CreatePost = () => {
             <label>Content</label>
             <textarea id="content" required rows={5}
                 onChange={(e) => setContent(e.target.value)}
+            />
+        </div>
+        {/* Upload image */}
+        <div>
+            <label>Upload image</label>
+            <input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={handleFileChange}
             />
         </div>
         {/* Button */}
