@@ -63,7 +63,7 @@ export const Home = () => {
             environment.
           </p>
 
-          {/* UPDATED BUTTON SECTION */}
+          {/*BUTTON SECTION */}
           <div className="mt-8 sm:mt-10 w-full flex justify-center">
             <button
               className="group relative inline-flex items-center justify-center 

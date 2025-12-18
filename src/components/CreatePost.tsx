@@ -32,19 +32,16 @@ const createPost = async (post: PostInput, imageFile: File) => {
 
 /* Create post section */
 export const CreatePost = () => {
-  /* States */
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  /* React query  */
   const { mutate } = useMutation({
     mutationFn: (data: { post: PostInput; imageFile: File }) => {
       return createPost(data.post, data.imageFile);
     },
   });
 
-  /* Submit helper */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile) return;
@@ -58,28 +55,36 @@ export const CreatePost = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black py-20 px-4">
+    <div className="relative min-h-screen bg-black py-20 px-4 flex items-center justify-center">
+      {/* GLASS FORM CONTAINER 
+          - bg-white/5: Very low opacity white for that 'glass' look
+          - backdrop-blur-xl: Strong blur for the content behind it
+          - border-white/10: Subtle light border to catch the edge
+      */}
       <form
         onSubmit={handleSubmit}
-        className="max-w-2xl mx-auto space-y-8 bg-gray-900/40 p-8 rounded-2xl border border-gray-800 backdrop-blur-md shadow-2xl"
+        className="relative z-10 w-full max-w-2xl space-y-8 
+                   bg-white/5 backdrop-blur-xl 
+                   p-8 sm:p-10 rounded-3xl 
+                   border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)]"
       >
         <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-6">
-          Create <span className="text-pink-500">New Post</span>
+          Create <span className="text-pink-600">New Post</span>
         </h2>
 
         {/* Title */}
         <div className="space-y-2">
           <label
             htmlFor="title"
-            className="block text-xs font-bold text-gray-400 uppercase tracking-widest"
+            className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
           >
             Title
           </label>
           <input
-            className="w-full bg-black/60 border border-gray-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white p-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-600"
+            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-500"
             type="text"
             id="title"
-            placeholder="Enter a descriptive title..."
+            placeholder="A high-signal title..."
             required
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -89,7 +94,7 @@ export const CreatePost = () => {
         <div className="space-y-2">
           <label
             htmlFor="content"
-            className="block text-xs font-bold text-gray-400 uppercase tracking-widest"
+            className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
           >
             Content
           </label>
@@ -97,9 +102,9 @@ export const CreatePost = () => {
             id="content"
             required
             rows={6}
-            placeholder="Write your technical insight here..."
+            placeholder="What's on your mind?"
             onChange={(e) => setContent(e.target.value)}
-            className="w-full bg-black/60 border border-gray-700 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white p-3.5 rounded-xl outline-none transition-all duration-300 resize-none placeholder:text-gray-600"
+            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3.5 rounded-xl outline-none transition-all duration-300 resize-none placeholder:text-gray-500"
           />
         </div>
 
@@ -107,43 +112,37 @@ export const CreatePost = () => {
         <div className="space-y-2">
           <label
             htmlFor="image"
-            className="block text-xs font-bold text-gray-400 uppercase tracking-widest"
+            className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
           >
-            Media
+            Featured Image
           </label>
-          <div className="relative group">
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-400
-                file:mr-4 file:py-2.5 file:px-6
-                file:rounded-full file:border-0
-                file:text-sm file:font-bold
-                file:bg-pink-600 file:text-white
-                hover:file:bg-pink-500
-                cursor-pointer transition-all file:transition-colors"
-            />
-          </div>
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="block w-full text-sm text-gray-400
+              file:mr-4 file:py-2.5 file:px-6
+              file:rounded-full file:border-0
+              file:text-sm file:font-bold
+              file:bg-pink-600 file:text-white
+              hover:file:bg-pink-500
+              cursor-pointer transition-all"
+          />
         </div>
 
-        {/* Button Section */}
-        <div className="pt-6">
+        {/* Action Button */}
+        <div className="pt-4">
           <button
             type="submit"
             className="group relative w-full inline-flex items-center justify-center 
                        px-8 py-4 text-lg font-bold text-white 
                        rounded-full transition-all duration-500 ease-in-out 
-                       bg-pink-600 hover:bg-pink-500 overflow-hidden shadow-xl shadow-pink-900/20"
+                       bg-pink-600 hover:bg-pink-500 overflow-hidden"
           >
-            {/* The Pink/Rose Gradient Layer */}
             <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
-
             <span className="relative z-10 tracking-wide">Publish Post</span>
-
-            {/* The "Shine" Animation Layer */}
-            <span className="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-20 rotate-12 group-hover:-translate-x-[600px]"></span>
+            <span className="absolute right-0 w-12 h-32 -mt-12 transition-all duration-1000 transform translate-x-20 bg-white opacity-20 rotate-12 group-hover:-translate-x-[600px]"></span>
           </button>
         </div>
       </form>
