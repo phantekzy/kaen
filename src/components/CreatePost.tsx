@@ -8,7 +8,6 @@ interface PostInput {
     content: string;
 }
 const createPost = async (post: PostInput, imageFile: File) => {
-    /* Images */
     const filePath = `${post.title}-${Date.now()}-${imageFile.name}`
 
     const { error: uploadError } = await supabase.storage
@@ -17,10 +16,13 @@ const createPost = async (post: PostInput, imageFile: File) => {
 
     if (uploadError) throw new Error(uploadError.message)
 
-    /* Posts */
+    const { data: publicURLData } = supabase.storage
+        .from('post-images')
+        .getPublicUrl(filePath)
+
     const { data, error } = await supabase
         .from('posts')
-        .insert(post)
+        .insert({ ...post, image_url: publicURLData.publicUrl })
 
     if (error) throw new Error(error.message)
 
