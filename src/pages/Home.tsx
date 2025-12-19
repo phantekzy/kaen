@@ -53,7 +53,7 @@ export const Home = () => {
           <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-center leading-snug sm:leading-[1.1] w-full text-white">
             Build together
           </h1>
-          <h1 className="text-pink-600 text-5xl sm:text-7xl md:text-8xl lg:text-8xl font-extrabold text-center w-full whitespace-nowrap">
+          <h1 className="animate-shine-text text-5xl sm:text-7xl md:text-8xl lg:text-8xl font-extrabold text-center w-full whitespace-nowrap">
             shine alone
           </h1>
 

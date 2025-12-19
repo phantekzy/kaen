@@ -5,7 +5,7 @@ export const CreatePostPage = () => {
   return (
     <div className="bg-black min-h-screen pt-3 ">
       <div className="flex flex-col items-center space-y-1 sm:space-y-2">
-        <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold text-center text-white tracking-tight">
+        <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold text-center text-white tracking-tight animate-pulse">
           Draft your
         </h1>
         <h1 className="text-pink-600 text-5xl sm:text-7xl md:text-8xl font-extrabold text-center whitespace-nowrap tracking-tight">
