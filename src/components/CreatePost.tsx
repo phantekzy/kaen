@@ -38,7 +38,7 @@ export const CreatePost = () => {
   const [content, setContent] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const { mutate } = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: (data: { post: PostInput; imageFile: File }) => {
       return createPost(data.post, data.imageFile);
     },
@@ -57,20 +57,20 @@ export const CreatePost = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-black py-12 px-4 flex items-start justify-center">
+    <div className="relative min-h-screen bg-black py-10 px-4 flex items-start justify-center">
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-2xl space-y-8 
+        className="relative z-10 w-full max-w-2xl space-y-5 
                    bg-white/5 backdrop-blur-xl 
                    p-6 sm:p-8 rounded-3xl 
                    border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)]"
       >
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-6">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
           Create <span className="text-pink-600">New Post</span>
         </h2>
 
         {/* Title */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <label
             htmlFor="title"
             className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
@@ -78,7 +78,7 @@ export const CreatePost = () => {
             Title
           </label>
           <input
-            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3.5 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-500"
+            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-500"
             type="text"
             id="title"
             placeholder="A high-signal title..."
@@ -88,7 +88,7 @@ export const CreatePost = () => {
         </div>
 
         {/* Content */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <label
             htmlFor="content"
             className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
@@ -98,15 +98,15 @@ export const CreatePost = () => {
           <textarea
             id="content"
             required
-            rows={6}
+            rows={5}
             placeholder="What's on your mind?"
             onChange={(e) => setContent(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3.5 rounded-xl outline-none transition-all duration-300 resize-none placeholder:text-gray-500"
+            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3 rounded-xl outline-none transition-all duration-300 resize-none placeholder:text-gray-500"
           />
         </div>
 
         {/* Upload image */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <label
             htmlFor="image"
             className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
@@ -119,28 +119,73 @@ export const CreatePost = () => {
             accept="image/*"
             onChange={handleFileChange}
             className="block w-full text-sm text-gray-400
-              file:mr-4 file:py-2.5 file:px-6
-              file:rounded-full file:border-0
-              file:text-sm file:font-bold
-              file:bg-pink-600 file:text-white
-              hover:file:bg-pink-500
-              cursor-pointer transition-all"
+               file:mr-4 file:py-2 file:px-5
+               file:rounded-full file:border-0
+               file:text-sm file:font-bold
+               file:bg-pink-600 file:text-white
+               hover:file:bg-pink-500
+               cursor-pointer transition-all"
           />
         </div>
 
-        {/* Action Button */}
-        <div className="pt-4">
+        {/* Action Button Section */}
+        <div className="pt-2">
           <button
             type="submit"
-            className="group relative w-full inline-flex items-center justify-center 
-                       px-8 py-4 text-lg font-bold text-white 
+            disabled={isPending}
+            className={`group relative w-full inline-flex items-center justify-center 
+                       px-8 py-3.5 text-lg font-bold text-white 
                        rounded-full transition-all duration-500 ease-in-out 
-                       bg-pink-600 hover:bg-pink-500 overflow-hidden"
+                       overflow-hidden shadow-xl
+                       ${
+                         isPending
+                           ? "bg-pink-900/50 cursor-not-allowed border border-pink-500/30"
+                           : "bg-pink-600 hover:bg-pink-500 shadow-pink-900/20"
+                       }`}
           >
-            <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
-            <span className="relative z-10 tracking-wide">Publish Post</span>
-            <span className="absolute right-0 w-12 h-32 -mt-12 transition-all duration-1000 transform translate-x-20 bg-white opacity-20 rotate-12 group-hover:-translate-x-[600px]"></span>
+            {/* Hover Gradient - Disabled when pending */}
+            {!isPending && (
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
+            )}
+
+            <span className="relative z-10 tracking-wide flex items-center gap-2">
+              {isPending && (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              )}
+              {isPending ? "Creating the post..." : "Publish post"}
+            </span>
+
+            {/* Shine effect - Only shows if not pending */}
+            {!isPending && (
+              <span className="absolute right-0 w-12 h-32 -mt-12 transition-all duration-1000 transform translate-x-20 bg-white opacity-20 rotate-12 group-hover:-translate-x-[600px]"></span>
+            )}
           </button>
+
+          {/* Styled Error Message */}
+          {isError && (
+            <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-semibold text-center animate-pulse">
+              Error creating post. Please try again.
+            </div>
+          )}
         </div>
       </form>
     </div>
