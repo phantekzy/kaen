@@ -20,7 +20,13 @@ export const PostItem = ({ post }: Props) => {
       >
         <div className="flex-1 text-left">
           <div className="flex items-start gap-4 text-left">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-600 to-rose-700 border border-white/10 shrink-0 shadow-lg" />
+            {post.avatar_url ? (
+              <img src={post.avatar_url} alt="avatar image"
+               className="w-[35px] h-[35px] rounded-full object-cover"
+               />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-600 to-rose-700 border border-white/10 shrink-0 shadow-lg" />
+            )}
             <div className="text-left">
               <div className="text-lg md:text-xl font-bold text-white group-hover:text-pink-600 transition-colors duration-300 tracking-tight leading-snug line-clamp-2 text-left">
                 {post.title}
