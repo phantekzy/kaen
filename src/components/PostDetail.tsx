@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { Post } from "./PostList";
 import { supabase } from "../supabase-client";
+import { LikeButton } from "./LikeButton";
 
 // Props type
 interface Props {
@@ -73,6 +74,11 @@ export const PostDetail = ({ postId }: Props) => {
           <p className="text-gray-300 text-lg md:text-xl leading-relaxed whitespace-pre-wrap">
             {data?.content}
           </p>
+        </div>
+
+        {/* Like and dislike buttons  */}
+        <div className="px-8 md:px-12 pb-10">
+          <LikeButton postId={postId} />
         </div>
 
         {/* Shine Decor */}
