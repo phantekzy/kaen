@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 /* Navigation bar links */
 const navLinks = [
     { name: "Home", link: "/" },
+    { name: "Posts", link: "/posts" },
     { name: "Create Post", link: "/create" },
     { name: "Forums", link: "/forums" },
     { name: "Create Forum", link: "/forum/create" },
