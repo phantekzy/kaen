@@ -4,6 +4,7 @@ import { Home } from "./pages/Home"
 import { Navbar } from "./components/Navbar"
 import { CreatePostPage } from "./pages/CreatePostPage"
 import { Posts } from "./pages/Posts"
+import { PostPage } from "./pages/PostPage"
 /* App function  */
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/create" element={<CreatePostPage />} />
                     <Route path="/posts" element={<Posts />}/>
+                    <Route path="/post/:id" element={<PostPage />}/>
                 </Routes>
             </div>
         </div>
