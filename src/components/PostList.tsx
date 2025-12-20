@@ -39,13 +39,13 @@ export const PostList = () => {
   if (error)
     return (
       <div className="text-red-500 bg-red-500/10 p-4 rounded-2xl border border-red-500/20">
-        {" "}
         Error : {error.message}
       </div>
     );
-    // Return section
+
+  // Return section
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="flex flex-col gap-4">
       {data?.map((post, key) => (
         <PostItem key={key} post={post} />
       ))}

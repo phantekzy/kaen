@@ -9,35 +9,32 @@ interface Props {
 
 // PostItem section
 export const PostItem = ({ post }: Props) => {
-//   Return section
+  //   Return section
   return (
-    <div className="group relative h-full">
-      {/* Pink Glow on Hover */}
-      <div className="absolute -inset-0.5 bg-pink-600 rounded-[2rem] opacity-0 group-hover:opacity-15 transition duration-500 blur-lg" />
+    <div className="group relative">
+      <div className="absolute -inset-0.5 bg-pink-600 rounded-3xl opacity-0 group-hover:opacity-10 transition duration-500 blur-md" />
 
       <Link
         to={`/post/${post.id}`}
-        className="relative h-full flex flex-col bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden transition-all duration-300 hover:border-white/30 shadow-2xl"
+        className="relative flex flex-col sm:flex-row bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 transition-all duration-300 hover:border-white/30"
       >
-        <div className="p-6">
-          {/* Header : avatar and title */}
-          <div className="flex items-start gap-4">
+        <div className="flex-1 text-left">
+          <div className="flex items-start gap-4 text-left">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-600 to-rose-700 border border-white/10 shrink-0 shadow-lg" />
-            <div>
-              <div className="text-xl font-bold text-white group-hover:text-pink-600 transition-colors duration-300 tracking-tight leading-snug line-clamp-2">
+            <div className="text-left">
+              <div className="text-lg md:text-xl font-bold text-white group-hover:text-pink-600 transition-colors duration-300 tracking-tight leading-snug line-clamp-2 text-left">
                 {post.title}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Image section */}
-        <div className="px-6 pb-6 mt-auto">
-          <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/50">
+        <div className="mt-4 sm:mt-0 sm:ml-6 shrink-0 flex justify-start">
+          <div className="relative w-full sm:w-40 md:w-48 aspect-video sm:aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-black/50">
             <img
               src={post.image_url}
               alt={post.title}
-              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
             />
           </div>
         </div>
