@@ -9,14 +9,14 @@ interface Props {
 }
 
 // New comment type
-interface newComment {
+interface NewComment {
   content: string;
   parent_comment_id?: number | null;
 }
 
 // Create comments function
 const createComment = async (
-  newComment: newComment,
+  newComment: NewComment,
   postId: number,
   userId: string,
   author: string
@@ -29,9 +29,10 @@ export const CommentSection = ({ postID }: Props) => {
   //   user Authentification
   const { user } = useAuth();
   //   useMutation
-  const {} = useMutation({
-    mutationFn: (newComment) => createComment(),
+  const { mutate } = useMutation({
+    mutationFn: (newComment: NewComment) => createComment(newComment),
   });
+  //   Submit helper
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCommentText) return;
