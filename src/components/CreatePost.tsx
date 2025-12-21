@@ -55,7 +55,10 @@ export const CreatePost = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Extra safety check
+    if (!user) return;
     if (!selectedFile) return;
+
     mutate({
       post: {
         title,
@@ -78,7 +81,7 @@ export const CreatePost = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-4xl bg-[#1a1a1b] border border-[#343536] rounded-md overflow-hidden shadow-2xl transition-all"
       >
-        {/* Header - Sharp Corners */}
+        {/* Header */}
         <div className="p-4 sm:p-6 border-b border-[#343536]">
           <h2 className="text-[#d7dadc] font-bold text-lg sm:text-xl tracking-tight">
             Create <span className="text-pink-600">New Post</span>
@@ -92,11 +95,12 @@ export const CreatePost = () => {
               Title
             </label>
             <input
-              className="w-full bg-[#1a1a1b] border border-[#343536] text-[#d7dadc] p-3 rounded outline-none focus:border-[#d7dadc] transition-colors text-base font-semibold placeholder:text-[#474748]"
+              className="w-full bg-[#1a1a1b] border border-[#343536] text-[#d7dadc] p-3 rounded outline-none focus:border-[#d7dadc] transition-colors text-base font-semibold placeholder:text-[#474748] disabled:opacity-50"
               type="text"
               required
+              disabled={!user}
               value={title}
-              placeholder="Title"
+              placeholder={user ? "Title" : "Please login to write a title"}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
@@ -108,11 +112,14 @@ export const CreatePost = () => {
             </label>
             <textarea
               required
+              disabled={!user}
               rows={8}
               value={content}
-              placeholder="Text (optional)"
+              placeholder={
+                user ? "Text (optional)" : "Please login to write content"
+              }
               onChange={(e) => setContent(e.target.value)}
-              className="w-full bg-[#1a1a1b] border border-[#343536] text-[#d7dadc] p-3 rounded outline-none focus:border-[#d7dadc] transition-colors text-sm sm:text-base leading-relaxed resize-none placeholder:text-[#474748]"
+              className="w-full bg-[#1a1a1b] border border-[#343536] text-[#d7dadc] p-3 rounded outline-none focus:border-[#d7dadc] transition-colors text-sm sm:text-base leading-relaxed resize-none placeholder:text-[#474748] disabled:opacity-50"
             />
           </div>
 
@@ -121,19 +128,30 @@ export const CreatePost = () => {
             <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
               Featured Media
             </label>
-            <div className="relative border border-[#343536] rounded p-6 sm:p-10 flex flex-col items-center justify-center bg-black/20 hover:bg-black/40 transition-all cursor-pointer group">
+            <div
+              className={`relative border border-[#343536] rounded p-6 sm:p-10 flex flex-col items-center justify-center bg-black/20 transition-all ${
+                user
+                  ? "hover:bg-black/40 cursor-pointer group"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
+            >
               <input
                 type="file"
                 accept="image/*"
                 required
+                disabled={!user}
                 onChange={handleFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
               />
               <div className="text-center">
                 <p className="text-pink-600 font-bold text-xs sm:text-sm break-all">
-                  {selectedFile ? selectedFile.name : "Select Image to Upload"}
+                  {selectedFile
+                    ? selectedFile.name
+                    : user
+                    ? "Select Image to Upload"
+                    : "Upload disabled"}
                 </p>
-                {!selectedFile && (
+                {!selectedFile && user && (
                   <p className="text-[#818384] text-[10px] mt-1 uppercase">
                     JPG, PNG or GIF
                   </p>
@@ -143,14 +161,14 @@ export const CreatePost = () => {
           </div>
         </div>
 
-        {/* Action Button Section  */}
+        {/* Action Button Section */}
         <div className="p-4 sm:p-6 bg-[#272729]/30 border-t border-[#343536] flex justify-end">
           <button
             type="submit"
-            disabled={isPending || !title || !selectedFile}
+            disabled={isPending || !title || !selectedFile || !user}
             className={`px-8 py-2 rounded-full font-bold text-sm tracking-wide transition-all active:scale-95
                 ${
-                  isPending
+                  isPending || !user
                     ? "bg-[#343536] text-[#818384] cursor-not-allowed"
                     : "bg-[#d7dadc] text-black hover:bg-white shadow-md shadow-black/20"
                 }`}
@@ -159,7 +177,14 @@ export const CreatePost = () => {
           </button>
         </div>
 
-        {/* Error Message */}
+        {/* Error Message for Unauthenticated User */}
+        {!user && (
+          <div className="px-4 py-2 bg-pink-600/10 border-t border-pink-600/20 text-pink-600 text-[10px] font-bold text-center uppercase tracking-widest animate-pulse">
+            You must be logged in to create a post
+          </div>
+        )}
+
+        {/* Mutation Error Message */}
         {isError && (
           <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/20 text-red-500 text-[10px] font-bold text-center uppercase tracking-widest">
             Error: Please try again
