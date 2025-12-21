@@ -25,9 +25,10 @@ const createPost = async (post: PostInput, imageFile: File) => {
     .from("post-images")
     .getPublicUrl(filePath);
 
-  const { data, error } = await supabase
-    .from("posts")
-    .insert({ ...post, image_url: publicURLData.publicUrl });
+  const { data, error } = await supabase.from("posts").insert({
+    ...post,
+    image_url: publicURLData.publicUrl,
+  });
 
   if (error) throw new Error(error.message);
 
@@ -44,6 +45,11 @@ export const CreatePost = () => {
   const { mutate, isPending, isError } = useMutation({
     mutationFn: (data: { post: PostInput; imageFile: File }) => {
       return createPost(data.post, data.imageFile);
+    },
+    onSuccess: () => {
+      setTitle("");
+      setContent("");
+      setSelectedFile(null);
     },
   });
 
@@ -67,136 +73,98 @@ export const CreatePost = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-black py-10 px-4 flex items-start justify-center">
+    <div className="w-full px-2 sm:px-4 flex justify-center">
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-full max-w-2xl space-y-5 
-                   bg-white/5 backdrop-blur-xl 
-                   p-6 sm:p-8 rounded-3xl 
-                   border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)]"
+        className="w-full max-w-4xl bg-[#1a1a1b] border border-[#343536] rounded-md overflow-hidden shadow-2xl transition-all"
       >
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-2">
-          Create <span className="text-pink-600">New Post</span>
-        </h2>
-
-        {/* Title */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="title"
-            className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
-          >
-            Title
-          </label>
-          <input
-            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3 rounded-xl outline-none transition-all duration-300 placeholder:text-gray-500"
-            type="text"
-            id="title"
-            placeholder="A high-signal title..."
-            required
-            onChange={(e) => setTitle(e.target.value)}
-          />
+        {/* Header - Sharp Corners */}
+        <div className="p-4 sm:p-6 border-b border-[#343536]">
+          <h2 className="text-[#d7dadc] font-bold text-lg sm:text-xl tracking-tight">
+            Create <span className="text-pink-600">New Post</span>
+          </h2>
         </div>
 
-        {/* Content */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="content"
-            className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
-          >
-            Content
-          </label>
-          <textarea
-            id="content"
-            required
-            rows={5}
-            placeholder="What's on your mind?"
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 focus:border-pink-600 focus:ring-1 focus:ring-pink-600 text-white p-3 rounded-xl outline-none transition-all duration-300 resize-none placeholder:text-gray-500"
-          />
+        <div className="p-4 sm:p-6 space-y-5">
+          {/* Title Input */}
+          <div className="space-y-1.5">
+            <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
+              Title
+            </label>
+            <input
+              className="w-full bg-[#1a1a1b] border border-[#343536] text-[#d7dadc] p-3 rounded outline-none focus:border-[#d7dadc] transition-colors text-base font-semibold placeholder:text-[#474748]"
+              type="text"
+              required
+              value={title}
+              placeholder="Title"
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+
+          {/* Content Textarea */}
+          <div className="space-y-1.5">
+            <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
+              Content
+            </label>
+            <textarea
+              required
+              rows={8}
+              value={content}
+              placeholder="Text (optional)"
+              onChange={(e) => setContent(e.target.value)}
+              className="w-full bg-[#1a1a1b] border border-[#343536] text-[#d7dadc] p-3 rounded outline-none focus:border-[#d7dadc] transition-colors text-sm sm:text-base leading-relaxed resize-none placeholder:text-[#474748]"
+            />
+          </div>
+
+          {/* Image Upload Area */}
+          <div className="space-y-1.5">
+            <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
+              Featured Media
+            </label>
+            <div className="relative border border-[#343536] rounded p-6 sm:p-10 flex flex-col items-center justify-center bg-black/20 hover:bg-black/40 transition-all cursor-pointer group">
+              <input
+                type="file"
+                accept="image/*"
+                required
+                onChange={handleFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="text-center">
+                <p className="text-pink-600 font-bold text-xs sm:text-sm break-all">
+                  {selectedFile ? selectedFile.name : "Select Image to Upload"}
+                </p>
+                {!selectedFile && (
+                  <p className="text-[#818384] text-[10px] mt-1 uppercase">
+                    JPG, PNG or GIF
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Upload image */}
-        <div className="space-y-1.5">
-          <label
-            htmlFor="image"
-            className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1"
-          >
-            Featured Image
-          </label>
-          <input
-            type="file"
-            id="image"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="block w-full text-sm text-gray-400
-               file:mr-4 file:py-2 file:px-5
-               file:rounded-full file:border-0
-               file:text-sm file:font-bold
-               file:bg-pink-600 file:text-white
-               hover:file:bg-pink-500
-               cursor-pointer transition-all"
-          />
-        </div>
-
-        {/* Action Button Section */}
-        <div className="pt-2">
+        {/* Action Button Section  */}
+        <div className="p-4 sm:p-6 bg-[#272729]/30 border-t border-[#343536] flex justify-end">
           <button
             type="submit"
-            disabled={isPending}
-            className={`group relative w-full inline-flex items-center justify-center 
-                       px-8 py-3.5 text-lg font-bold text-white 
-                       rounded-full transition-all duration-500 ease-in-out 
-                       overflow-hidden shadow-xl
-                       ${
-                         isPending
-                           ? "bg-pink-900/50 cursor-not-allowed border border-pink-500/30"
-                           : "bg-pink-600 hover:bg-pink-500 shadow-pink-900/20"
-                       }`}
+            disabled={isPending || !title || !selectedFile}
+            className={`px-8 py-2 rounded-full font-bold text-sm tracking-wide transition-all active:scale-95
+                ${
+                  isPending
+                    ? "bg-[#343536] text-[#818384] cursor-not-allowed"
+                    : "bg-[#d7dadc] text-black hover:bg-white shadow-md shadow-black/20"
+                }`}
           >
-            {/* Hover Gradient - Disabled when pending */}
-            {!isPending && (
-              <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-600 opacity-0 group-hover:opacity-100 transition duration-500 blur-sm"></span>
-            )}
-
-            <span className="relative z-10 tracking-wide flex items-center gap-2">
-              {isPending && (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              )}
-              {isPending ? "Creating the post..." : "Publish post"}
-            </span>
-
-            {/* Shine effect - Only shows if not pending */}
-            {!isPending && (
-              <span className="absolute right-0 w-12 h-32 -mt-12 transition-all duration-1000 transform translate-x-20 bg-white opacity-20 rotate-12 group-hover:-translate-x-[600px]"></span>
-            )}
+            {isPending ? "POSTING..." : "POST"}
           </button>
-
-          {/* Styled Error Message */}
-          {isError && (
-            <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-semibold text-center animate-pulse">
-              Error creating post. Please try again.
-            </div>
-          )}
         </div>
+
+        {/* Error Message */}
+        {isError && (
+          <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/20 text-red-500 text-[10px] font-bold text-center uppercase tracking-widest">
+            Error: Please try again
+          </div>
+        )}
       </form>
     </div>
   );

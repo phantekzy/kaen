@@ -39,17 +39,31 @@ export const PostList = () => {
 
   if (error)
     return (
-      <div className="text-red-500 bg-red-500/10 p-4 rounded-2xl border border-red-500/20">
-        Error : {error.message}
+      <div className="max-w-4xl mx-auto px-2 w-full">
+        <div className="text-red-500 bg-red-500/10 p-4 rounded-md border border-red-500/20 text-sm font-bold uppercase tracking-tight">
+          Error : {error.message}
+        </div>
       </div>
     );
 
   // Return section
   return (
-    <div className="flex flex-col gap-4">
-      {data?.map((post, key) => (
-        <PostItem key={key} post={post} />
-      ))}
+    <div className="max-w-4xl mx-auto px-2 md:px-4 w-full">
+      {/* Container for the feed items */}
+      <div className="flex flex-col gap-2 sm:gap-3">
+        {data?.map((post) => (
+          <PostItem key={post.id} post={post} />
+        ))}
+      </div>
+
+      {/* End of feed indicator */}
+      {data && data.length > 0 && (
+        <div className="py-10 text-center">
+          <div className="inline-block w-1.5 h-1.5 rounded-full bg-[#343536] mx-1"></div>
+          <div className="inline-block w-1.5 h-1.5 rounded-full bg-[#343536] mx-1"></div>
+          <div className="inline-block w-1.5 h-1.5 rounded-full bg-[#343536] mx-1"></div>
+        </div>
+      )}
     </div>
   );
 };

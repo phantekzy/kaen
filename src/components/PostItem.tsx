@@ -9,41 +9,55 @@ interface Props {
 
 // PostItem section
 export const PostItem = ({ post }: Props) => {
-  //   Return section
+  // Return section
   return (
     <div className="group relative">
-      <div className="absolute -inset-0.5 bg-pink-600 rounded-3xl opacity-0 group-hover:opacity-10 transition duration-500 blur-md" />
-
       <Link
         to={`/post/${post.id}`}
-        className="relative flex flex-col sm:flex-row bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 transition-all duration-300 hover:border-white/30"
+        className="relative flex flex-col sm:flex-row gap-4 bg-[#1a1a1b] border border-[#343536] rounded-md p-4 transition-all duration-200 hover:border-[#474748] active:bg-[#272729]"
       >
-        <div className="flex-1 text-left">
-          <div className="flex items-start gap-4 text-left">
+        {/* Left Side: Avatar and Content */}
+        <div className="flex-1 flex gap-3 text-left">
+          {/* Avatar Section */}
+          <div className="shrink-0">
             {post.avatar_url ? (
-              <img src={post.avatar_url} alt="avatar image"
-               className="w-[35px] h-[35px] rounded-full object-cover"
-               />
+              <img
+                src={post.avatar_url}
+                alt="avatar image"
+                className="w-8 h-8 rounded-full object-cover border border-[#343536]"
+              />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-600 to-rose-700 border border-white/10 shrink-0 shadow-lg" />
+              <div className="w-8 h-8 rounded-full bg-pink-600 border border-white/10 shrink-0 shadow-lg" />
             )}
-            <div className="text-left">
-              <div className="text-lg md:text-xl font-bold text-white group-hover:text-pink-600 transition-colors duration-300 tracking-tight leading-snug line-clamp-2 text-left">
-                {post.title}
-              </div>
-            </div>
+          </div>
+
+          {/* Text Content */}
+          <div className="flex flex-col gap-1">
+            <p className="text-[#818384] text-[10px] font-bold uppercase tracking-widest">
+              {new Date(post.created_at).toLocaleDateString()}
+            </p>
+            <h2 className="text-base md:text-xl font-bold text-[#d7dadc] group-hover:text-white transition-colors duration-200 tracking-tight leading-snug line-clamp-2">
+              {post.title}
+            </h2>
+            {/* Content*/}
+            <p className="text-[#818384] text-sm line-clamp-2 mt-1">
+              {post.content}
+            </p>
           </div>
         </div>
 
-        <div className="mt-4 sm:mt-0 sm:ml-6 shrink-0 flex justify-start">
-          <div className="relative w-full sm:w-40 md:w-48 aspect-video sm:aspect-[16/10] rounded-2xl overflow-hidden border border-white/10 bg-black/50">
-            <img
-              src={post.image_url}
-              alt={post.title}
-              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-700"
-            />
+        {/* Right Side: Image Preview */}
+        {post.image_url && (
+          <div className="shrink-0 flex items-center">
+            <div className="relative w-full sm:w-32 md:w-40 aspect-video rounded-md overflow-hidden border border-[#343536] bg-black/50">
+              <img
+                src={post.image_url}
+                alt={post.title}
+                className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Link>
     </div>
   );
