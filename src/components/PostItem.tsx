@@ -4,7 +4,7 @@ import type { Post } from "./PostList";
 import { useAuth } from "../context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
-import { Trash2, X, Image as ImageIcon } from "lucide-react";
+import { Trash2, X } from "lucide-react";
 
 interface Props {
   post: Post;

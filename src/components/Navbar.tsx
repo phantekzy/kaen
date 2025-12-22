@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import {
   Menu,
-  X,
   Search,
   Plus,
   LogOut,
   LayoutGrid,
   Users,
-  Bell,
   Home,
-  Command,
   Github,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
