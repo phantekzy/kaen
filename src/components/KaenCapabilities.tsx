@@ -43,7 +43,8 @@ const KaenCapabilities = () => {
           Engineered by Imainiginations
         </span>
         <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter">
-          What is <span className="text-pink-500 text-5xl">Kean</span> for?
+          {/* UPDATED: Kean -> Kaen */}
+          What is <span className="text-pink-500 text-5xl">Kaen</span> for?
         </h2>
       </div>
 

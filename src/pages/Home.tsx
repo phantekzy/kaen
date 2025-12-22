@@ -60,7 +60,8 @@ export const Home = () => {
   });
 
   const commands = useMemo(
-    () => ["kean --about", "kean --origin", "kean --utility", "kean --status"],
+    // Global Update: All "kean" -> "kaen"
+    () => ["kaen --about", "kaen --origin", "kaen --utility", "kaen --status"],
     []
   );
 
@@ -172,12 +173,12 @@ export const Home = () => {
                 <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
               </div>
               <span className="text-[10px] uppercase font-bold text-gray-500 tracking-widest">
-                kean_terminal_v1.0.42
+                kaen_terminal_v1.0.42
               </span>
             </div>
             <div className="p-6 h-[180px] sm:h-[240px] text-[12px] sm:text-[13px] leading-relaxed">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-pink-500 font-bold">root@kean:~$</span>
+                <span className="text-pink-500 font-bold">root@kaen:~$</span>
                 <span className="text-white">{displayText}</span>
                 <span className="w-2 h-4 bg-pink-500 animate-pulse" />
               </div>
@@ -225,7 +226,7 @@ export const Home = () => {
                       <div className="flex items-center gap-3 text-white font-bold border border-white/10 w-fit px-3 py-1 rounded">
                         <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
                         <span className="tracking-widest uppercase text-[10px]">
-                          Kean Core: Online // Signal Stable
+                          Kaen Core: Online // Signal Stable
                         </span>
                       </div>
                     )}

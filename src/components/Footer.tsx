@@ -8,6 +8,7 @@ import {
   Globe,
   ChevronRight,
   Cpu,
+  Linkedin,
 } from "lucide-react";
 
 const Footer = () => {
@@ -29,7 +30,7 @@ const Footer = () => {
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.4)]" />
               <span className="text-white font-black tracking-tighter uppercase text-sm">
-                Imainiginations
+                Kaen
               </span>
             </div>
             <p className="text-gray-500 text-xs leading-relaxed max-w-xs font-medium uppercase tracking-tight">
@@ -38,10 +39,10 @@ const Footer = () => {
             </p>
             <div className="flex gap-2">
               <span className="px-2 py-1 bg-white/[0.03] border border-white/5 rounded text-[9px] font-mono text-gray-500 uppercase tracking-widest flex items-center gap-1">
-                <Cpu size={10} /> Build_025
+                <Cpu size={10} /> Imainiginations
               </span>
               <span className="px-2 py-1 bg-white/[0.03] border border-white/5 rounded text-[9px] font-mono text-gray-500 uppercase tracking-widest">
-                Network_Stable
+                phantekzy
               </span>
             </div>
           </div>
@@ -52,7 +53,7 @@ const Footer = () => {
               <Terminal size={12} /> Directory
             </p>
             <nav className="flex flex-col gap-3">
-              {["Home", "Posts", "System"].map((link) => (
+              {["Home", "Posts", "Communities"].map((link) => (
                 <Link
                   key={link}
                   to={link === "Home" ? "/" : `/${link.toLowerCase()}`}
@@ -77,7 +78,7 @@ const Footer = () => {
               {[
                 { name: "Github", icon: <Github size={14} /> },
                 { name: "X / Twitter", icon: <Twitter size={14} /> },
-                { name: "Discord", icon: <MessageSquare size={14} /> },
+                { name: "Linkedin", icon: <Linkedin size={14} /> },
               ].map((social) => (
                 <a
                   key={social.name}
