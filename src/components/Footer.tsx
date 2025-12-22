@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import {
   Github,
   Twitter,
-  MessageSquare,
   Terminal,
   Globe,
   ChevronRight,
