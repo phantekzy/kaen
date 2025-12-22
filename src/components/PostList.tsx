@@ -1,19 +1,18 @@
-// Import section
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
 import { PostItem } from "./PostItem";
 
-// Post type
 export interface Post {
   id: number;
   title: string;
   content: string;
   created_at: string;
   image_url: string;
+  user_id: string;
+  author: string;
   avatar_url?: string;
 }
 
-// fetching the posts from supabase
 const fetchPosts = async (): Promise<Post[]> => {
   const { data, error } = await supabase
     .from("posts")
@@ -23,7 +22,6 @@ const fetchPosts = async (): Promise<Post[]> => {
   return data as Post[];
 };
 
-// Postlist section
 export const PostList = () => {
   const { data, error, isLoading } = useQuery<Post[], Error>({
     queryKey: ["posts"],
@@ -46,24 +44,13 @@ export const PostList = () => {
       </div>
     );
 
-  // Return section
   return (
     <div className="max-w-4xl mx-auto px-2 md:px-4 w-full">
-      {/* Container for the feed items */}
       <div className="flex flex-col gap-2 sm:gap-3">
         {data?.map((post) => (
           <PostItem key={post.id} post={post} />
         ))}
       </div>
-
-      {/* End of feed indicator */}
-      {data && data.length > 0 && (
-        <div className="py-10 text-center">
-          <div className="inline-block w-1.5 h-1.5 rounded-full bg-[#343536] mx-1"></div>
-          <div className="inline-block w-1.5 h-1.5 rounded-full bg-[#343536] mx-1"></div>
-          <div className="inline-block w-1.5 h-1.5 rounded-full bg-[#343536] mx-1"></div>
-        </div>
-      )}
     </div>
   );
 };
