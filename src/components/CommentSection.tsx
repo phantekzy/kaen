@@ -1,3 +1,4 @@
+// Import section
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -104,7 +105,7 @@ export const CommentSection = ({ postId }: Props) => {
 
   if (isLoading)
     return (
-      <div className="animate-pulse bg-white/5 h-20 w-full rounded-2xl mt-10" />
+      <div className="animate-pulse bg-white/5 h-24 w-full rounded-2xl mt-10" />
     );
 
   const commentTree = comments ? buildCommentTree(comments) : [];
@@ -118,11 +119,10 @@ export const CommentSection = ({ postId }: Props) => {
         </h3>
       </div>
 
-      {/* FIXED: Display fetchError if something goes wrong during loading */}
       {fetchError && (
         <div className="flex items-center gap-2 text-red-400 bg-red-400/10 p-3 rounded-xl border border-red-400/20 text-xs">
           <AlertCircle size={14} />
-          <span>Failed to load comments: {fetchError.message}</span>
+          <span>Error loading comments: {fetchError.message}</span>
         </div>
       )}
 
@@ -137,7 +137,7 @@ export const CommentSection = ({ postId }: Props) => {
               />
             ) : (
               <span className="text-white font-bold">
-                {user.user_metadata?.user_name?.[0]}
+                {user.user_metadata?.user_name?.[0] || "U"}
               </span>
             )}
           </div>
@@ -146,7 +146,7 @@ export const CommentSection = ({ postId }: Props) => {
               e.preventDefault();
               mutate({ content: newCommentText });
             }}
-            className="flex-1"
+            className="flex-1 min-w-0"
           >
             <textarea
               placeholder="What are your thoughts?"
@@ -164,7 +164,7 @@ export const CommentSection = ({ postId }: Props) => {
             <div className="flex justify-end mt-2">
               <button
                 disabled={!newCommentText.trim() || isPending}
-                className="bg-pink-600 text-white px-6 py-2 rounded-xl font-bold text-xs hover:bg-pink-500 disabled:opacity-50"
+                className="bg-pink-600 text-white px-6 py-2 rounded-xl font-bold text-xs hover:bg-pink-500 disabled:opacity-50 transition-all"
               >
                 {isPending ? "POSTING..." : "POST COMMENT"}
               </button>
