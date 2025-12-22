@@ -1,13 +1,28 @@
 import { useState } from "react";
 import type { Comment } from "./CommentSection";
 import { useAuth } from "../context/AuthContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
-import { Reply, X, Trash2, Pencil, Check } from "lucide-react";
+import {
+  Reply,
+  X,
+  Trash2,
+  Pencil,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 
 interface Props {
   comment: Comment & { children?: Comment[] };
   postId: number;
+}
+
+interface CommentVote {
+  id: number;
+  comment_id: number;
+  user_id: string;
+  vote: number;
 }
 
 export const CommentItem = ({ comment, postId }: Props) => {
@@ -20,7 +35,63 @@ export const CommentItem = ({ comment, postId }: Props) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Update mutation (Pink themed)
+  const { data: votes } = useQuery<CommentVote[], Error>({
+    queryKey: ["comment_votes", comment.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("comment_votes")
+        .select("*")
+        .eq("comment_id", comment.id);
+      if (error) throw new Error(error.message);
+      return data as CommentVote[];
+    },
+    refetchInterval: 5000,
+  });
+
+  const { mutate: toggleVote, isPending: isVoting } = useMutation({
+    mutationFn: async (voteValue: number) => {
+      if (!user) throw new Error("You must be logged in");
+
+      const { data: existingVote } = await supabase
+        .from("comment_votes")
+        .select("*")
+        .eq("comment_id", comment.id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (existingVote) {
+        if (existingVote.vote === voteValue) {
+          await supabase
+            .from("comment_votes")
+            .delete()
+            .eq("id", existingVote.id);
+        } else {
+          await supabase
+            .from("comment_votes")
+            .update({ vote: voteValue })
+            .eq("id", existingVote.id);
+        }
+      } else {
+        await supabase.from("comment_votes").insert({
+          comment_id: comment.id,
+          user_id: user.id,
+          vote: voteValue,
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comment_votes", comment.id],
+      });
+    },
+  });
+
+  const likesCount = votes?.filter((v) => v.vote === 1).length || 0;
+  const dislikesCount = votes?.filter((v) => v.vote === -1).length || 0;
+  const userVote = votes?.find((v) => v.user_id === user?.id);
+  const isLiked = userVote?.vote === 1;
+  const isDisliked = userVote?.vote === -1;
+
   const { mutate: updateComment, isPending: isUpdating } = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
@@ -35,7 +106,6 @@ export const CommentItem = ({ comment, postId }: Props) => {
     },
   });
 
-  // Delete mutation (Pink themed)
   const { mutate: deleteComment, isPending: isDeleting } = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
@@ -44,12 +114,10 @@ export const CommentItem = ({ comment, postId }: Props) => {
         .eq("id", comment.id);
       if (error) throw new Error(error.message);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] }),
   });
 
-  // Reply mutation
   const { mutate: replyMutate, isPending: isReplyPending } = useMutation({
     mutationFn: async (content: string) => {
       const { error } = await supabase.from("comments").insert({
@@ -78,7 +146,7 @@ export const CommentItem = ({ comment, postId }: Props) => {
       } transition-all`}
     >
       <div className="flex gap-3">
-        {/* Avatar amd Thread Line Column */}
+        {/* Avatar Section */}
         <div className="flex flex-col items-center">
           <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-600/80 to-purple-600/80 flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
             {comment.avatar_url ? (
@@ -96,7 +164,7 @@ export const CommentItem = ({ comment, postId }: Props) => {
           <div className="w-[1.5px] h-full bg-white/5 mt-2 mb-2 rounded-full" />
         </div>
 
-        {/* Content Area Column */}
+        {/* Content Section */}
         <div className="flex-1 min-w-0 pb-6">
           <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 hover:bg-white/[0.06] transition-all group/card">
             <div className="flex justify-between items-center mb-1">
@@ -114,16 +182,15 @@ export const CommentItem = ({ comment, postId }: Props) => {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="text-gray-600 hover:text-pink-400 p-1 transition-colors"
+                      className="text-gray-600 hover:text-pink-400 p-1"
                     >
                       <Pencil size={14} />
                     </button>
-
                     {isConfirmingDelete ? (
-                      <div className="flex items-center gap-1 animate-in fade-in zoom-in duration-200">
+                      <div className="flex items-center gap-1 animate-in zoom-in duration-200">
                         <button
                           onClick={() => deleteComment()}
-                          className="text-pink-500 text-[10px] font-bold uppercase px-2 py-1 bg-pink-500/10 rounded-md hover:bg-pink-500/20"
+                          className="text-pink-500 text-[10px] font-bold uppercase px-2 py-1 bg-pink-500/10 rounded-md"
                         >
                           Confirm?
                         </button>
@@ -137,15 +204,13 @@ export const CommentItem = ({ comment, postId }: Props) => {
                     ) : (
                       <button
                         onClick={() => setIsConfirmingDelete(true)}
-                        className="text-gray-600 hover:text-pink-500 p-1 transition-colors"
+                        className="text-gray-600 hover:text-pink-500 p-1"
                       >
                         <Trash2 size={14} />
                       </button>
                     )}
                   </div>
                 )}
-
-                {/* Reply */}
                 {user && !isEditing && (
                   <button
                     onClick={() => setShowReply(!showReply)}
@@ -157,14 +222,13 @@ export const CommentItem = ({ comment, postId }: Props) => {
               </div>
             </div>
 
-            {/* Editing mode*/}
             {isEditing ? (
-              <div className="space-y-2 animate-in fade-in slide-in-from-top-1">
+              <div className="space-y-2 animate-in fade-in">
                 <textarea
                   autoFocus
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className="w-full bg-black/20 border border-pink-500/30 rounded-lg p-2 text-sm text-white outline-none focus:border-pink-500 transition-all"
+                  className="w-full bg-black/20 border border-pink-500/30 rounded-lg p-2 text-sm text-white outline-none focus:border-pink-500"
                   rows={2}
                 />
                 <div className="flex justify-end gap-2">
@@ -173,7 +237,7 @@ export const CommentItem = ({ comment, postId }: Props) => {
                       setIsEditing(false);
                       setEditText(comment.content);
                     }}
-                    className="text-gray-500 hover:text-white text-[10px] font-bold px-2"
+                    className="text-gray-500 text-[10px] font-bold px-2"
                   >
                     CANCEL
                   </button>
@@ -184,16 +248,59 @@ export const CommentItem = ({ comment, postId }: Props) => {
                       editText === comment.content ||
                       isUpdating
                     }
-                    className="flex items-center gap-1 bg-pink-600 text-white px-3 py-1 rounded-md text-[10px] font-bold disabled:opacity-30 hover:bg-pink-500"
+                    className="bg-pink-600 text-white px-3 py-1 rounded-md text-[10px] font-bold"
                   >
                     <Check size={12} /> {isUpdating ? "SAVING..." : "SAVE"}
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-gray-300 leading-relaxed break-words">
-                {comment.content}
-              </p>
+              <>
+                <p className="text-sm text-gray-300 leading-relaxed break-words">
+                  {comment.content}
+                </p>
+
+                {/* Voting Row */}
+                <div
+                  className={`flex items-center gap-2 mt-4 transition-opacity ${
+                    isVoting ? "opacity-50" : ""
+                  }`}
+                >
+                  <button
+                    disabled={!user || isVoting}
+                    onClick={() => toggleVote(1)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all duration-300 ${
+                      isLiked
+                        ? "bg-pink-600/20 text-pink-500 border border-pink-500/30"
+                        : "text-gray-500 hover:bg-pink-600/10 hover:text-pink-400 border border-transparent"
+                    }`}
+                  >
+                    <ThumbsUp
+                      size={14}
+                      className={isLiked ? "fill-current" : ""}
+                    />
+                    <span className="text-[11px] font-bold">{likesCount}</span>
+                  </button>
+
+                  <button
+                    disabled={!user || isVoting}
+                    onClick={() => toggleVote(-1)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all duration-300 ${
+                      isDisliked
+                        ? "bg-white/10 text-white border border-white/20"
+                        : "text-gray-500 hover:bg-white/5 hover:text-white border border-transparent"
+                    }`}
+                  >
+                    <ThumbsDown
+                      size={14}
+                      className={isDisliked ? "fill-current" : ""}
+                    />
+                    <span className="text-[11px] font-bold">
+                      {dislikesCount}
+                    </span>
+                  </button>
+                </div>
+              </>
             )}
           </div>
 
@@ -225,7 +332,7 @@ export const CommentItem = ({ comment, postId }: Props) => {
                   </button>
                   <button
                     disabled={!replyText.trim() || isReplyPending}
-                    className="bg-pink-600 text-white px-4 py-1.5 rounded-lg text-[10px] font-bold disabled:opacity-30 hover:bg-pink-500"
+                    className="bg-pink-600 text-white px-4 py-1.5 rounded-lg text-[10px] font-bold"
                   >
                     {isReplyPending ? "SENDING..." : "REPLY"}
                   </button>
