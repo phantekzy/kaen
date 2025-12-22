@@ -55,23 +55,56 @@
     #db2777 60%,
     #db2777 100%
   );
-  background-size: 200% auto;
+  background-svize: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   animation: textShine 3s linear infinite;
 }
 
-::-webkit-scrollbar {
+html::-webkit-scrollbar {
+  width: 12px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #0b0b0b;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #343536;
+  border-radius: 10px;
+  border: 3px solid #0b0b0b;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #db2777;
+}
+
+div::-webkit-scrollbar {
   width: 6px;
 }
-::-webkit-scrollbar-track {
+
+div::-webkit-scrollbar-track {
   background: transparent;
 }
-::-webkit-scrollbar-thumb {
+
+div::-webkit-scrollbar-thumb {
   background: rgba(219, 39, 119, 0.2);
   border-radius: 10px;
 }
-::-webkit-scrollbar-thumb:hover {
+
+div::-webkit-scrollbar-thumb:hover {
   background: rgba(219, 39, 119, 0.5);
+}
+
+/* Firefox support for the Main Page */
+html {
+  scrollbar-width: auto;
+  scrollbar-color: #343536 #0b0b0b;
+}
+
+/* Firefox support for the Comments */
+div {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(219, 39, 119, 0.2) transparent;
 }

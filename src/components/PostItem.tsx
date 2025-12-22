@@ -4,7 +4,7 @@ import type { Post } from "./PostList";
 import { useAuth } from "../context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
-import { Trash2, X } from "lucide-react";
+import { Trash2, X, Image as ImageIcon } from "lucide-react";
 
 interface Props {
   post: Post;
@@ -96,6 +96,16 @@ export const PostItem = ({ post }: Props) => {
             </p>
           </div>
         </div>
+
+        {post.image_url && (
+          <div className="sm:w-32 sm:h-24 w-full h-48 shrink-0 rounded-lg overflow-hidden border border-[#343536] bg-black/20">
+            <img
+              src={post.image_url}
+              alt={post.title}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+        )}
       </Link>
     </div>
   );
