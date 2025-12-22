@@ -26,7 +26,7 @@ const AnimatedIcon: FC<AnimatedIconProps> = ({
   depth,
   mousePos,
 }) => {
-  const MAX_OFFSET = 40;
+  const MAX_OFFSET = 20;
 
   const translateX = clamp(mousePos.x * depth, -MAX_OFFSET, MAX_OFFSET);
   const translateY = clamp(mousePos.y * depth, -MAX_OFFSET, MAX_OFFSET);
