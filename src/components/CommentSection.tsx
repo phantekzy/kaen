@@ -22,6 +22,7 @@ export interface Comment {
   user_id: string;
   created_at: string;
   author: string;
+  avatar_url?: string;
 }
 
 const fetchComments = async (postId: number): Promise<Comment[]> => {
@@ -38,7 +39,8 @@ const createComment = async (
   newComment: NewComment,
   postId: number,
   userId?: string,
-  author?: string
+  author?: string,
+  avatarUrl?: string
 ) => {
   if (!userId || !author) throw new Error("Authentication required");
   const { error } = await supabase.from("comments").insert({
@@ -47,6 +49,7 @@ const createComment = async (
     parent_comment_id: newComment.parent_comment_id || null,
     user_id: userId,
     author: author,
+    avatar_url: avatarUrl,
   });
   if (error) throw new Error(error.message);
 };
@@ -76,7 +79,8 @@ export const CommentSection = ({ postId }: Props) => {
         newComment,
         postId,
         user?.id,
-        user?.user_metadata?.user_name || user?.email
+        user?.user_metadata?.user_name || user?.email,
+        user?.user_metadata?.avatar_url
       ),
     onSuccess: () => {
       setNewCommentText("");
@@ -110,12 +114,20 @@ export const CommentSection = ({ postId }: Props) => {
       <div className="flex items-center gap-2 text-pink-500 border-b border-white/5 pb-4">
         <MessageSquare size={20} />
         <h3 className="font-bold uppercase tracking-wider text-sm">
-          Comments ({comments?.length || 0})
+          Discussion
         </h3>
       </div>
 
+      {/* FIXED: Display fetchError if something goes wrong during loading */}
+      {fetchError && (
+        <div className="flex items-center gap-2 text-red-400 bg-red-400/10 p-3 rounded-xl border border-red-400/20 text-xs">
+          <AlertCircle size={14} />
+          <span>Failed to load comments: {fetchError.message}</span>
+        </div>
+      )}
+
       {user ? (
-        <div className="flex gap-4 animate-in fade-in slide-in-from-top-4">
+        <div className="flex gap-4">
           <div className="w-10 h-10 rounded-full bg-pink-600 flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
             {user.user_metadata?.avatar_url ? (
               <img
@@ -125,7 +137,7 @@ export const CommentSection = ({ postId }: Props) => {
               />
             ) : (
               <span className="text-white font-bold">
-                {user.user_metadata?.user_name?.[0] || user.email?.[0]}
+                {user.user_metadata?.user_name?.[0]}
               </span>
             )}
           </div>
@@ -143,7 +155,6 @@ export const CommentSection = ({ postId }: Props) => {
               value={newCommentText}
               onChange={(e) => setNewCommentText(e.target.value)}
             />
-            {/* Display the postError if it exists */}
             {postError && (
               <div className="mt-2 flex items-center gap-2 text-red-400 text-xs">
                 <AlertCircle size={14} />
@@ -167,10 +178,6 @@ export const CommentSection = ({ postId }: Props) => {
             Please sign in to participate in the discussion.
           </p>
         </div>
-      )}
-
-      {fetchError && (
-        <div className="text-red-400 text-xs">Failed to load comments.</div>
       )}
 
       <div className="space-y-2">
