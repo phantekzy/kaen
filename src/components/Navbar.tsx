@@ -26,9 +26,15 @@ export const Navbar = () => {
     { name: "Communities", link: "/forums", icon: <Users size={18} /> },
   ];
 
+  // Helper to close menu and execute action
+  const handleAction = (action?: () => void) => {
+    setMenuOpen(false);
+    if (action) action();
+  };
+
   return (
     <>
-      {/* --- DESKTOP NAVIGATION --- */}
+      {/* DESKTOP NAVIGATION  */}
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -102,7 +108,7 @@ export const Navbar = () => {
             })}
           </div>
 
-          {/* SEARCH AMD SIGN-IN */}
+          {/* SEARCH AND ACTIONS */}
           <div className="flex items-center gap-4">
             <div
               className={`flex items-center bg-black/40 border transition-all duration-300 rounded-xl px-3 h-9 ${
@@ -124,6 +130,18 @@ export const Navbar = () => {
               />
             </div>
 
+            {user && (
+              <Link
+                to="/create"
+                className="flex items-center justify-center gap-2 px-3 h-9 bg-transparent border border-[#343536] text-[#818384] hover:text-white hover:border-pink-500/50 hover:bg-pink-500/5 rounded-xl transition-all active:scale-95"
+              >
+                <Plus size={16} strokeWidth={2.5} />
+                <span className="text-[12px] font-bold uppercase tracking-tight">
+                  Create
+                </span>
+              </Link>
+            )}
+
             <div className="h-6 w-[1px] bg-[#343536]" />
 
             {user ? (
@@ -144,7 +162,7 @@ export const Navbar = () => {
                       </p>
                     </div>
                     <button
-                      onClick={signOut}
+                      onClick={() => signOut()}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-all font-sans"
                     >
                       <LogOut size={16} /> Logout
@@ -153,9 +171,8 @@ export const Navbar = () => {
                 </div>
               </div>
             ) : (
-              /* SIGN IN BUTTON */
               <button
-                onClick={signInWithGitHub}
+                onClick={() => signInWithGitHub()}
                 className="group relative flex items-center gap-2 px-5 h-9 rounded-xl bg-[#272729] border border-[#343536] hover:border-pink-500/50 transition-all active:scale-95 shadow-lg"
               >
                 <Github
@@ -172,7 +189,7 @@ export const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* --- MOBILE: BOTTOM DOCK --- */}
+      {/* -MOBILE BOTTOM LIST */}
       <div className="md:hidden fixed bottom-6 inset-x-4 z-50">
         <div className="bg-[#1a1a1b]/95 backdrop-blur-2xl border border-[#343536] h-16 rounded-[20px] flex items-center justify-around px-2 shadow-2xl">
           {navLinks.map(({ name, link, icon }) => {
@@ -194,7 +211,9 @@ export const Navbar = () => {
           })}
           <button
             onClick={() => setMenuOpen(true)}
-            className="flex flex-col items-center gap-1 p-2 text-[#818384]"
+            className={`flex flex-col items-center gap-1 p-2 transition-colors ${
+              menuOpen ? "text-pink-500" : "text-[#818384]"
+            }`}
           >
             <Menu size={18} />
             <span className="text-[10px] font-bold tracking-tight">More</span>
@@ -202,7 +221,7 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* MOBILE SIDEBAR */}
+      {/* MOBILE BAR*/}
       <AnimatePresence>
         {menuOpen && (
           <>
@@ -210,47 +229,67 @@ export const Navbar = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setMenuOpen(false)}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] md:hidden"
+              onClick={() => handleAction()}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] md:hidden"
             />
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed bottom-0 inset-x-0 h-[55vh] bg-[#1a1a1b] border-t border-[#343536] z-[70] rounded-t-[32px] p-8 flex flex-col font-sans shadow-2xl shadow-pink-500/5"
+              className="fixed bottom-0 inset-x-0 bg-[#1a1a1b] border-t border-[#343536] z-[70] rounded-t-[24px] p-6 pb-28 flex flex-col font-sans"
             >
-              <div className="w-12 h-1 bg-[#343536] rounded-full mx-auto mb-8" />
-              <div className="flex items-center gap-4 mb-10">
+              <div className="w-10 h-1 bg-[#343536] rounded-full mx-auto mb-6" />
+
+              <div className="flex items-center gap-3 mb-6 p-3 bg-black/20 rounded-2xl border border-[#343536]/50">
                 <img
                   src={user?.user_metadata.avatar_url || "/logo.png"}
-                  className="w-14 h-14 rounded-2xl border border-[#343536]"
+                  className="w-10 h-10 rounded-xl border border-[#343536]"
                   alt=""
                 />
-                <div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">
-                    {displayName || "Guest"}
+                <div className="overflow-hidden">
+                  <h3 className="text-sm font-bold text-white truncate">
+                    {displayName || "Guest User"}
                   </h3>
-                  <p className="text-pink-600 font-bold text-xs uppercase tracking-[0.2em]">
-                    Network
+                  <p className="text-pink-500 font-bold text-[10px] uppercase tracking-wider">
+                    Network Account
                   </p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+
+              <div className="grid grid-cols-1 gap-2">
                 <Link
                   to="/create"
-                  className="bg-[#272729] p-4 rounded-2xl flex flex-col gap-2 border border-[#343536]"
+                  onClick={() => handleAction()}
+                  className="w-full flex items-center gap-4 p-4 bg-[#272729] rounded-xl border border-[#343536] active:bg-pink-600/10 active:border-pink-500/50 transition-all"
                 >
-                  <Plus className="text-pink-500" />
-                  <span className="font-bold text-white">Create Post</span>
+                  <div className="bg-pink-600/20 p-2 rounded-lg">
+                    <Plus size={18} className="text-pink-500" />
+                  </div>
+                  <span className="font-bold text-sm text-white">
+                    Create New Post
+                  </span>
                 </Link>
+
                 <button
-                  onClick={user ? signOut : signInWithGitHub}
-                  className="bg-[#272729] p-4 rounded-2xl flex flex-col gap-2 border border-[#343536]"
+                  onClick={() =>
+                    handleAction(user ? signOut : signInWithGitHub)
+                  }
+                  className="w-full flex items-center gap-4 p-4 bg-[#272729] rounded-xl border border-[#343536] active:bg-red-500/10 transition-all"
                 >
-                  <LogOut className="text-red-500" />
-                  <span className="font-bold text-white">
-                    {user ? "Logout" : "Connect"}
+                  <div
+                    className={`p-2 rounded-lg ${
+                      user ? "bg-red-500/20" : "bg-blue-500/20"
+                    }`}
+                  >
+                    {user ? (
+                      <LogOut size={18} className="text-red-500" />
+                    ) : (
+                      <Github size={18} className="text-blue-400" />
+                    )}
+                  </div>
+                  <span className="font-bold text-sm text-white">
+                    {user ? "Sign Out" : "Connect GitHub"}
                   </span>
                 </button>
               </div>
