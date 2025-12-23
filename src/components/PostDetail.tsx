@@ -22,6 +22,14 @@ export const PostDetail = ({ postId }: { postId: number }) => {
     },
   });
 
+  // Function to handle the collapse and the scroll jump
+  const handleToggle = () => {
+    if (isExpanded) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    setIsExpanded(!isExpanded);
+  };
+
   const isLong = (post?.content?.length || 0) > 400;
 
   return (
@@ -43,7 +51,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
         <div className="p-6 md:p-10 space-y-6">
           <motion.h1
             layout
-            className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white leading-tight"
+            className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white"
           >
             {post?.title}
           </motion.h1>
@@ -51,10 +59,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
           <div className="relative">
             <motion.div
               initial={false}
-              animate={{
-                height: isExpanded ? "auto" : "4.5em",
-                opacity: 1,
-              }}
+              animate={{ height: isExpanded ? "auto" : "4.5em" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="overflow-hidden"
             >
@@ -67,7 +72,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
               <motion.button
                 layout
                 whileHover={{ x: 5 }}
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={handleToggle} // Use the new toggle function here
                 className="mt-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-pink-600 hover:text-white transition-colors"
               >
                 {isExpanded ? <Minus size={12} /> : <Plus size={12} />}
@@ -98,10 +103,9 @@ export const PostDetail = ({ postId }: { postId: number }) => {
       <AnimatePresence>
         {showComments && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             className="pb-20"
           >
             <CommentSection postId={postId} />
