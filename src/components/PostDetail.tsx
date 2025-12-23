@@ -1,214 +1,113 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageSquare, Plus, Minus } from "lucide-react";
 import { supabase } from "../supabase-client";
-import { useAuth } from "../context/AuthContext";
 import { LikeButton } from "./LikeButton";
 import { CommentSection } from "./CommentSection";
-import { Pencil, Trash2, X, Check } from "lucide-react";
-import type { Post } from "./PostList";
 
-interface Props {
-  postId: number;
-}
+export const PostDetail = ({ postId }: { postId: number }) => {
+  const [showComments, setShowComments] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
-const fetchPostById = async (id: number): Promise<Post> => {
-  const { data, error } = await supabase
-    .from("posts")
-    .select("*")
-    .eq("id", id)
-    .single();
-  if (error) throw new Error(error.message);
-  return data as Post;
-};
-
-export const PostDetail = ({ postId }: Props) => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
-  const [editContent, setEditContent] = useState("");
-
-  const { data, error, isLoading } = useQuery<Post, Error>({
+  const { data: post } = useQuery({
     queryKey: ["post", postId],
-    queryFn: () => fetchPostById(postId),
-  });
-
-  const { mutate: deletePost, isPending: isDeleting } = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase
+    queryFn: async () => {
+      const { data } = await supabase
         .from("posts")
-        .delete()
+        .select("*")
         .eq("id", postId)
-        .eq("user_id", user?.id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      navigate("/");
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+        .single();
+      return data;
     },
   });
 
-  const { mutate: updatePost, isPending: isUpdating } = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase
-        .from("posts")
-        .update({ title: editTitle, content: editContent })
-        .eq("id", postId)
-        .eq("user_id", user?.id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      setIsEditing(false);
-      queryClient.invalidateQueries({ queryKey: ["post", postId] });
-    },
-  });
-
-  if (isLoading)
-    return (
-      <div className="flex justify-center py-20">
-        <div className="w-10 h-10 border-4 border-pink-600/20 border-t-pink-600 animate-spin rounded-full"></div>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className="p-4 text-red-500 bg-red-500/10 border border-red-500/20 rounded-xl">
-        Error: {error.message}
-      </div>
-    );
-
-  const isOwner = user?.id === data?.user_id;
+  const isLong = (post?.content?.length || 0) > 400;
 
   return (
-    <div className="max-w-4xl mx-auto px-2 md:px-4 pt-6 pb-20">
-      <div className="bg-[#1a1a1b] border border-[#343536] rounded-md overflow-hidden shadow-2xl">
-        {/* OWNER TOOLBAR */}
-        {isOwner && (
-          <div className="flex justify-end items-center gap-2 px-4 py-2 bg-black/40 border-b border-[#343536]">
-            {!isEditing ? (
-              <>
-                {!isConfirmingDelete ? (
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => {
-                        setEditTitle(data!.title);
-                        setEditContent(data!.content);
-                        setIsEditing(true);
-                      }}
-                      className="p-2 text-gray-400 hover:text-pink-500 transition-colors"
-                    >
-                      <Pencil size={18} />
-                    </button>
-                    <button
-                      onClick={() => setIsConfirmingDelete(true)}
-                      className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 animate-in slide-in-from-right-2 duration-200">
-                    <span className="text-gray-400 text-[10px] font-bold uppercase">
-                      Are you sure?
-                    </span>
-                    <button
-                      onClick={() => deletePost()}
-                      disabled={isDeleting}
-                      className="bg-red-600/20 text-red-500 border border-red-500/30 px-3 py-1 rounded-md text-[10px] font-bold uppercase hover:bg-red-600 hover:text-white transition-all"
-                    >
-                      {isDeleting ? "Deleting..." : "Confirm Delete"}
-                    </button>
-                    <button
-                      onClick={() => setIsConfirmingDelete(false)}
-                      className="text-gray-500 hover:text-white p-1"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-gray-400 text-xs font-bold uppercase hover:text-white"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => updatePost()}
-                  disabled={isUpdating}
-                  className="bg-pink-600 hover:bg-pink-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all shadow-lg"
-                >
-                  <Check size={14} />{" "}
-                  {isUpdating ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
+    <div className="flex flex-col gap-6">
+      <motion.div
+        layout
+        className="bg-zinc-900/20 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm shadow-xl"
+      >
+        {post?.image_url && (
+          <div className="w-full bg-black/40 border-b border-white/5">
+            <img
+              src={post.image_url}
+              className="w-full h-auto max-h-[70vh] object-contain mx-auto"
+              alt=""
+            />
+          </div>
+        )}
+
+        <div className="p-6 md:p-10 space-y-6">
+          <motion.h1
+            layout
+            className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white leading-tight"
+          >
+            {post?.title}
+          </motion.h1>
+
+          <div className="relative">
+            <motion.div
+              initial={false}
+              animate={{
+                height: isExpanded ? "auto" : "4.5em",
+                opacity: 1,
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="overflow-hidden"
+            >
+              <p className="text-zinc-400 text-sm md:text-base leading-relaxed font-light">
+                {post?.content}
+              </p>
+            </motion.div>
+
+            {isLong && (
+              <motion.button
+                layout
+                whileHover={{ x: 5 }}
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="mt-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-pink-600 hover:text-white transition-colors"
+              >
+                {isExpanded ? <Minus size={12} /> : <Plus size={12} />}
+                {isExpanded ? "SHOW LESS" : "SHOW MORE"}
+              </motion.button>
             )}
           </div>
-        )}
-
-        {/* HEADER SECTION */}
-        <div className="p-4 md:p-5 pb-2">
-          <p className="text-[#818384] text-xs mb-2">
-            Posted on: {new Date(data!.created_at).toLocaleDateString()}
-          </p>
-          {isEditing ? (
-            <input
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              className="w-full bg-black/40 border border-pink-500/30 rounded-lg p-3 text-xl font-bold text-white outline-none focus:border-pink-500"
-            />
-          ) : (
-            <h2 className="text-xl md:text-2xl font-bold text-[#d7dadc] leading-tight">
-              {data?.title}
-            </h2>
-          )}
         </div>
 
-        {/* IMAGE SECTION */}
-        {data?.image_url && (
-          <div className="w-full bg-black border-y border-[#343536]">
-            <img
-              src={data.image_url}
-              alt={data.title}
-              className={`w-full h-auto object-cover block transition-opacity duration-300 ${
-                isEditing ? "opacity-40" : "opacity-100"
-              }`}
-            />
-          </div>
-        )}
-
-        {/* CONTENT SECTION */}
-        <div className="p-4 md:p-5">
-          {isEditing ? (
-            <textarea
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              rows={12}
-              className="w-full bg-black/40 border border-pink-500/30 rounded-lg p-3 text-[#d7dadc] outline-none focus:border-pink-500 resize-none text-sm md:text-base leading-relaxed"
-            />
-          ) : (
-            <p className="text-[#d7dadc] text-sm md:text-base leading-relaxed whitespace-pre-wrap">
-              {data?.content}
-            </p>
-          )}
-        </div>
-
-        {/* LIKE BUTTON SECTION */}
-        <div className="px-4 py-2 border-t border-[#343536] bg-[#272729]/50">
+        <div className="px-6 py-4 bg-white/[0.02] border-t border-white/5 flex items-center justify-between">
           <LikeButton postId={postId} />
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowComments(!showComments)}
+            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all
+              ${
+                showComments
+                  ? "bg-pink-600 border-pink-500 text-white shadow-lg shadow-pink-600/20"
+                  : "bg-zinc-900/50 border-white/10 text-zinc-500 hover:text-white"
+              }`}
+          >
+            <MessageSquare size={14} />
+            {showComments ? "CLOSE_COMMS" : "ACCESS_COMMS"}
+          </motion.button>
         </div>
+      </motion.div>
 
-        {/* COMMENTS SECTION */}
-        <div className="p-4 md:p-5 border-t border-[#343536]">
-          <CommentSection postId={postId} />
-        </div>
-      </div>
+      <AnimatePresence>
+        {showComments && (
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.98 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="pb-20"
+          >
+            <CommentSection postId={postId} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
