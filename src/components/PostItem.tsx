@@ -115,7 +115,7 @@ export const PostItem = ({ post, variant = "list" }: Props) => {
                 POST
               </span>
               <span className="text-zinc-700 text-[10px] font-mono tracking-tighter">
-                DATA_SRCE // {post.id}
+                POST_ // {post.id}
               </span>
             </div>
 
@@ -146,7 +146,7 @@ export const PostItem = ({ post, variant = "list" }: Props) => {
                 )}
               </div>
               <span className="text-zinc-300 text-xs font-black tracking-tight uppercase italic">
-                @{post.author || "sys_user"}
+                @{post.author || "kaen_user"}
               </span>
             </div>
 

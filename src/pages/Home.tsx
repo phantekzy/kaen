@@ -54,6 +54,14 @@ export const Home = () => {
   const [commandIndex, setCommandIndex] = useState(0);
   const [showLogs, setShowLogs] = useState(false);
 
+  // Icons for mobile
+  const Icon1 = icons[0]?.Icon;
+  const Icon2 = icons[1]?.Icon;
+  const Icon3 = icons[2]?.Icon;
+  const Icon4 = icons[3]?.Icon;
+  const Icon5 = icons[4]?.Icon;
+  const Icon6 = icons[5]?.Icon;
+
   const { data: latestPosts, isLoading } = useQuery<Post[], Error>({
     queryKey: ["homeThreads"],
     queryFn: fetchHomeThreads,
@@ -63,19 +71,6 @@ export const Home = () => {
     () => ["kaen --about", "kaen --origin", "kaen --utility", "kaen --status"],
     []
   );
-
-  const displayedIcons = isMobile ? icons.slice(0, 6) : icons;
-  const ICON_COUNT = displayedIcons.length;
-  const TOP_PADDING = 1;
-  const BOTTOM_PADDING = 42;
-
-  const getMobilePosition = (index: number) => {
-    const step = (BOTTOM_PADDING - TOP_PADDING) / Math.max(ICON_COUNT - 1, 1);
-    return {
-      top: `${TOP_PADDING + index * step}%`,
-      left: `${12 + (index % 3) * 32}%`,
-    };
-  };
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -104,19 +99,60 @@ export const Home = () => {
         isMobile || isTablet ? "overflow-x-hidden bg-black" : "bg-black"
       }
     >
-      <section className="relative min-h-[75vh] sm:min-h-screen w-full flex flex-col pt-6 sm:pt-16 pb-4 sm:pb-20 px-6">
+      <section
+        className={`relative min-h-[75vh] sm:min-h-screen w-full flex flex-col pt-6 sm:pt-16 pb-4 sm:pb-20 px-6 ${
+          isMobile ? "overflow-hidden" : ""
+        }`}
+      >
         <div className="absolute inset-0 z-0 pointer-events-none">
-          {displayedIcons.map((icon, index) => (
-            <AnimatedIcon
-              key={index}
-              Icon={icon.Icon}
-              size={isMobile ? 20 : icon.size}
-              opacity={0.1}
-              position={isMobile ? getMobilePosition(index) : icon.position}
-              depth={isMobile ? 0 : icon.depth}
-              mousePos={isMobile ? { x: 0, y: 0 } : mousePos}
-            />
-          ))}
+          {isMobile ? (
+            /* MOBILE */
+            <div className="absolute inset-0 h-full w-full opacity-20">
+              {Icon1 && (
+                <div className="absolute top-[5%] left-[5%] text-pink-600">
+                  <Icon1 size={32} className="" />
+                </div>
+              )}
+              {Icon2 && (
+                <div className="absolute top-[8%] right-[5%] text-pink-600">
+                  <Icon2 size={32} className="" />
+                </div>
+              )}
+              {Icon3 && (
+                <div className="absolute top-[18%] left-[8%] text-pink-600">
+                  <Icon3 size={32} className="" />
+                </div>
+              )}
+              {Icon4 && (
+                <div className="absolute top-[22%] right-[8%] text-pink-600">
+                  <Icon4 size={32} className="" />
+                </div>
+              )}
+              {Icon5 && (
+                <div className="absolute top-[35%] left-[5%] text-pink-600">
+                  <Icon5 size={32} className="" />
+                </div>
+              )}
+              {Icon6 && (
+                <div className="absolute top-[40%] right-[5%] text-pink-600">
+                  <Icon6 size={32} className="" />
+                </div>
+              )}
+            </div>
+          ) : (
+            /* DESKTOP*/
+            icons.map((icon, index) => (
+              <AnimatedIcon
+                key={index}
+                Icon={icon.Icon}
+                size={icon.size}
+                opacity={icon.opacity}
+                position={icon.position}
+                depth={icon.depth}
+                mousePos={mousePos}
+              />
+            ))
+          )}
         </div>
 
         <main className="relative z-10 flex flex-col items-center text-center">
@@ -215,8 +251,7 @@ export const Home = () => {
                         <p className="text-white font-bold">USE_CASES:</p>
                         <p className="text-gray-400 text-[11px]">
                           - Share advanced technical intelligence
-                          <br />
-                          - Audit peer-to-peer system architectures
+                          <br />- Audit peer-to-peer system architectures
                           <br />- Document engineering breakthroughs
                         </p>
                       </div>
@@ -292,6 +327,7 @@ export const Home = () => {
               ))}
         </div>
       </section>
+
       <Testimonials />
     </div>
   );

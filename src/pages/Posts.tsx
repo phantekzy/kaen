@@ -13,19 +13,19 @@ import { motion } from "framer-motion";
 
 export const Posts = () => {
   const bgIcons = [
-    { Icon: FileCode, top: "10%", left: "2%" },
-    { Icon: Braces, top: "18%", right: "2%" },
-    { Icon: Terminal, top: "35%", left: "2%" },
-    { Icon: Globe, top: "42%", right: "2%" },
-    { Icon: Cpu, top: "65%", left: "2%" },
-    { Icon: Code2, top: "72%", right: "2%" },
-    { Icon: Database, top: "88%", left: "2%" },
-    { Icon: Atom, top: "92%", right: "2%" },
+    { Icon: FileCode, top: "10%", left: "4%" },
+    { Icon: Braces, top: "18%", right: "4%" },
+    { Icon: Terminal, top: "35%", left: "4%" },
+    { Icon: Globe, top: "45%", right: "4%" },
+    { Icon: Cpu, top: "60%", left: "4%" },
+    { Icon: Code2, top: "75%", right: "4%" },
+    { Icon: Database, top: "85%", left: "4%" },
+    { Icon: Atom, top: "92%", right: "4%" },
   ];
 
   return (
-    <div className="min-h-screen bg-black relative">
-      <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="min-h-screen bg-black relative w-full">
+      <div className="fixed inset-0 z-0 pointer-events-none w-full h-[100dvh]">
         {bgIcons.map((item, i) => (
           <motion.div
             key={i}
@@ -35,17 +35,16 @@ export const Posts = () => {
             className="absolute text-white"
             style={{
               top: item.top,
-              left: item.left,
-              right: item.right,
+              ...(item.left ? { left: item.left } : { right: item.right }),
             }}
           >
-            <item.Icon size={40} strokeWidth={1} />
+            <item.Icon size={32} strokeWidth={1} />
           </motion.div>
         ))}
       </div>
 
+      {/* CONTENT LAYER */}
       <div className="relative z-10 max-w-7xl mx-auto pt-24 pb-32 px-6">
-        {/* 2. HEADER */}
         <header className="mb-16 border-b border-white/5 pb-10">
           <div className="flex items-center gap-3 mb-6">
             <span className="text-pink-600 font-black text-[10px] uppercase tracking-[0.5em]">
@@ -63,7 +62,6 @@ export const Posts = () => {
           </p>
         </header>
 
-        {/* 3. THE FEED */}
         <div className="relative">
           <PostList />
         </div>
