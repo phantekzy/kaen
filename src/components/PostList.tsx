@@ -53,7 +53,7 @@ export const PostList = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 w-full pb-32">
-      {/* THE SMOOTH FLOATING HEADER */}
+      {/* FLOATING HEADER */}
       <div className="hidden md:block sticky top-24 z-50 w-full mb-12">
         <motion.div
           layout
