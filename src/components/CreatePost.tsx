@@ -43,7 +43,7 @@ export const CreatePost = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { user } = useAuth();
 
-  const { mutate, isPending, isError } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: { post: PostInput; imageFile: File }) => {
       return createPost(data.post, data.imageFile);
     },
