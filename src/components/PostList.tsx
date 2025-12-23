@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
 import { PostItem } from "./PostItem";
-import { MessageSquareOff } from "lucide-react";
+import { LayoutGrid, List, Loader2 } from "lucide-react";
+import { motion, useScroll } from "framer-motion";
 
 export interface Post {
   id: number;
@@ -24,48 +26,133 @@ const fetchPosts = async (): Promise<Post[]> => {
 };
 
 export const PostList = () => {
-  const { data, error, isLoading } = useQuery<Post[], Error>({
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+  const { scrollY } = useScroll();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    return scrollY.on("change", (latest) => {
+      setIsScrolled(latest > 50);
+    });
+  }, [scrollY]);
+
+  const { data, isLoading } = useQuery<Post[], Error>({
     queryKey: ["posts"],
     queryFn: fetchPosts,
   });
 
   if (isLoading)
     return (
-      <div className="flex justify-center py-20">
-        <div className="w-10 h-10 border-4 border-pink-600/20 border-t-pink-600 rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center py-40 w-full">
+        <Loader2 className="text-pink-600 animate-spin mb-4" size={40} />
+        <span className="text-zinc-500 font-mono text-[10px] uppercase tracking-[0.3em]">
+          Syncing_Database
+        </span>
       </div>
     );
-
-  if (error)
-    return (
-      <div className="max-w-4xl mx-auto px-2 w-full">
-        <div className="text-red-500 bg-red-500/10 p-4 rounded-md border border-red-500/20 text-sm font-bold uppercase tracking-tight">
-          Error : {error.message}
-        </div>
-      </div>
-    );
-
-  if (!data || data.length === 0) {
-    return (
-      <div className="max-w-4xl mx-auto px-2 w-full py-20 flex flex-col items-center justify-center text-center">
-        <div className="bg-[#1a1a1b] border border-[#343536] p-10 rounded-xl w-full">
-          <MessageSquareOff size={48} className="text-gray-600 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-[#d7dadc]">No posts yet</h3>
-          <p className="text-gray-500 mt-2">
-            Be the first one to share something with the community!
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="max-w-4xl mx-auto px-2 md:px-4 w-full">
-      <div className="flex flex-col gap-2 sm:gap-3">
-        {data.map((post) => (
-          <PostItem key={post.id} post={post} />
-        ))}
+    <div className="max-w-7xl mx-auto px-4 w-full pb-32">
+      {/* THE SMOOTH FLOATING HEADER */}
+      <div className="hidden md:block sticky top-24 z-50 w-full mb-12">
+        <motion.div
+          layout
+          transition={{
+            type: "spring",
+            stiffness: 250,
+            damping: 30,
+            mass: 0.8,
+          }}
+          className={`
+            flex items-center overflow-hidden border border-white/5 backdrop-blur-xl
+            ${
+              isScrolled
+                ? "bg-zinc-900/90 rounded-2xl p-1.5 w-max shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10"
+                : "w-full justify-between py-6 bg-transparent border-t-0 border-x-0 border-b"
+            }
+          `}
+        >
+          {/* Text Section */}
+          <motion.div
+            layout
+            animate={{
+              opacity: isScrolled ? 0 : 1,
+              width: isScrolled ? 0 : "auto",
+              marginRight: isScrolled ? 0 : 20,
+            }}
+            className="flex flex-col whitespace-nowrap overflow-hidden"
+          >
+            <h2 className="text-2xl font-black text-white uppercase tracking-tighter leading-none">
+              Feed
+            </h2>
+            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-1">
+              {data?.length} Total Posts
+            </p>
+          </motion.div>
+
+          {/* Switcher Buttons */}
+          <motion.div
+            layout
+            className={`flex items-center gap-1.5 ${
+              !isScrolled &&
+              "bg-zinc-900/50 p-1 rounded-xl border border-white/5"
+            }`}
+          >
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-2 rounded-lg transition-all flex items-center justify-center ${
+                viewMode === "list"
+                  ? "bg-white text-black"
+                  : "text-zinc-500 hover:text-white"
+              }`}
+            >
+              <List size={18} />
+            </button>
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-2 rounded-lg transition-all flex items-center justify-center ${
+                viewMode === "grid"
+                  ? "bg-white text-black"
+                  : "text-zinc-500 hover:text-white"
+              }`}
+            >
+              <LayoutGrid size={18} />
+            </button>
+          </motion.div>
+        </motion.div>
       </div>
+
+      {/* Mobile Header */}
+      <div className="md:hidden mb-10 border-b border-white/5 pb-6">
+        <h2 className="text-3xl font-black text-white uppercase tracking-tighter leading-none">
+          Feed
+        </h2>
+        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em] mt-2">
+          {data?.length} Total Posts
+        </p>
+      </div>
+
+      {/* Feed Layout */}
+      <motion.div
+        layout
+        className={`grid gap-6 ${
+          viewMode === "grid"
+            ? "md:grid-cols-2 lg:grid-cols-3"
+            : "grid-cols-1 max-w-4xl mx-auto"
+        }`}
+      >
+        {data?.map((post) => (
+          <motion.div
+            key={post.id}
+            layout
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="h-full"
+          >
+            <PostItem post={post} variant={viewMode} />
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 };

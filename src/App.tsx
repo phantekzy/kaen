@@ -7,6 +7,7 @@ import { Posts } from "./pages/Posts";
 import { PostPage } from "./pages/PostPage";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import { ScrollProgress } from "./components/ScrollProgress";
 /* App function  */
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       {/* Navigation bar */}
       <Navbar />
       <ScrollToTop />
+      <ScrollProgress />
       {/* Home page */}
       <div className="container mx-auto px-4 py-6">
         <Routes>
