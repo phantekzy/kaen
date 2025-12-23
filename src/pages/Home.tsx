@@ -60,7 +60,6 @@ export const Home = () => {
   });
 
   const commands = useMemo(
-    // Global Update: All "kean" -> "kaen"
     () => ["kaen --about", "kaen --origin", "kaen --utility", "kaen --status"],
     []
   );
@@ -286,7 +285,7 @@ export const Home = () => {
                   <div className="flex items-center gap-2 text-[10px] text-gray-500">
                     <div className="w-4 h-px bg-pink-500/50" />
                     <span className="font-bold tracking-tight uppercase">
-                      @{post.author || "system"}
+                      @{post.author || "user"}
                     </span>
                   </div>
                 </Link>

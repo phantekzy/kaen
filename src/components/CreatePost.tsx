@@ -4,11 +4,11 @@ import React, { useState, type ChangeEvent } from "react";
 import { supabase } from "../supabase-client";
 import { useAuth } from "../context/AuthContext";
 
-// postInput type
 interface PostInput {
   title: string;
   content: string;
   avatar_url: string | null;
+  author: string;
 }
 
 // createPost function
@@ -27,6 +27,7 @@ const createPost = async (post: PostInput, imageFile: File) => {
 
   const { data, error } = await supabase.from("posts").insert({
     ...post,
+    user_id: (await supabase.auth.getUser()).data.user?.id,
     image_url: publicURLData.publicUrl,
   });
 
@@ -55,7 +56,6 @@ export const CreatePost = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Extra safety check
     if (!user) return;
     if (!selectedFile) return;
 
@@ -64,6 +64,10 @@ export const CreatePost = () => {
         title,
         content,
         avatar_url: user?.user_metadata.avatar_url || null,
+        author:
+          user?.user_metadata?.user_name ||
+          user?.email?.split("@")[0] ||
+          "kaen_user",
       },
       imageFile: selectedFile,
     });
@@ -81,7 +85,6 @@ export const CreatePost = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-4xl bg-[#1a1a1b] border border-[#343536] rounded-md overflow-hidden shadow-2xl transition-all"
       >
-        {/* Header */}
         <div className="p-4 sm:p-6 border-b border-[#343536]">
           <h2 className="text-[#d7dadc] font-bold text-lg sm:text-xl tracking-tight">
             Create <span className="text-pink-600">New Post</span>
@@ -89,7 +92,6 @@ export const CreatePost = () => {
         </div>
 
         <div className="p-4 sm:p-6 space-y-5">
-          {/* Title Input */}
           <div className="space-y-1.5">
             <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
               Title
@@ -105,7 +107,6 @@ export const CreatePost = () => {
             />
           </div>
 
-          {/* Content Textarea */}
           <div className="space-y-1.5">
             <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
               Content
@@ -123,7 +124,6 @@ export const CreatePost = () => {
             />
           </div>
 
-          {/* Image Upload Area */}
           <div className="space-y-1.5">
             <label className="text-[#818384] text-[10px] font-bold uppercase tracking-widest ml-0.5">
               Featured Media
@@ -151,17 +151,11 @@ export const CreatePost = () => {
                     ? "Select Image to Upload"
                     : "Upload disabled"}
                 </p>
-                {!selectedFile && user && (
-                  <p className="text-[#818384] text-[10px] mt-1 uppercase">
-                    JPG, PNG or GIF
-                  </p>
-                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Action Button Section */}
         <div className="p-4 sm:p-6 bg-[#272729]/30 border-t border-[#343536] flex justify-end">
           <button
             type="submit"
@@ -176,20 +170,6 @@ export const CreatePost = () => {
             {isPending ? "POSTING..." : "POST"}
           </button>
         </div>
-
-        {/* Error Message for Unauthenticated User */}
-        {!user && (
-          <div className="px-4 py-2 bg-pink-600/10 border-t border-pink-600/20 text-pink-600 text-[10px] font-bold text-center uppercase tracking-widest animate-pulse">
-            You must be logged in to create a post
-          </div>
-        )}
-
-        {/* Mutation Error Message */}
-        {isError && (
-          <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/20 text-red-500 text-[10px] font-bold text-center uppercase tracking-widest">
-            Error: Please try again
-          </div>
-        )}
       </form>
     </div>
   );
