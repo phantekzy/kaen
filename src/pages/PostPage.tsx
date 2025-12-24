@@ -35,7 +35,13 @@ export const PostPage = () => {
     },
   });
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#020202] flex items-center justify-center">
+        <div className="w-10 h-10 border-2 border-white/10 border-t-pink-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#020202] text-white selection:bg-pink-600/30">
@@ -59,11 +65,14 @@ export const PostPage = () => {
                 {post?.author}
               </h2>
               <p className="text-zinc-500 font-mono text-[9px] mt-1 uppercase">
-                {new Date(post?.created_at).toLocaleDateString()}
+                {post?.created_at
+                  ? new Date(post.created_at).toLocaleDateString()
+                  : ""}
               </p>
             </div>
           </div>
 
+          {/* DESKTOP STICKY HUD */}
           <div className="hidden lg:flex sticky top-24 flex-col gap-3">
             <motion.div
               layout
@@ -94,7 +103,9 @@ export const PostPage = () => {
                     {post?.author}
                   </h2>
                   <p className="text-zinc-500 font-mono text-[9px] uppercase mt-2">
-                    {new Date(post?.created_at).toLocaleDateString()}
+                    {post?.created_at
+                      ? new Date(post.created_at).toLocaleDateString()
+                      : ""}
                   </p>
                 </motion.div>
               )}

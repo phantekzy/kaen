@@ -10,7 +10,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
   const [showComments, setShowComments] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { data: post } = useQuery({
+  const { data: post, isLoading } = useQuery({
     queryKey: ["post", postId],
     queryFn: async () => {
       const { data } = await supabase
@@ -22,13 +22,20 @@ export const PostDetail = ({ postId }: { postId: number }) => {
     },
   });
 
-  // Function to handle the collapse and the scroll jump
   const handleToggle = () => {
     if (isExpanded) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
     setIsExpanded(!isExpanded);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-8 h-8 border-2 border-white/10 border-t-pink-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   const isLong = (post?.content?.length || 0) > 400;
 
@@ -72,7 +79,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
               <motion.button
                 layout
                 whileHover={{ x: 5 }}
-                onClick={handleToggle} // Use the new toggle function here
+                onClick={handleToggle}
                 className="mt-4 flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-pink-600 hover:text-white transition-colors"
               >
                 {isExpanded ? <Minus size={12} /> : <Plus size={12} />}
