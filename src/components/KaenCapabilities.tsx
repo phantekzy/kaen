@@ -1,5 +1,7 @@
+// Import section
 import { Share2, MessageSquare, Code2, ShieldCheck } from "lucide-react";
 
+// Kean capabilities
 const KaenCapabilities = () => {
   const protocols = [
     {
