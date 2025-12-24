@@ -1,3 +1,4 @@
+// Import section
 import { useState } from "react";
 import type { Comment } from "./CommentSection";
 import { useAuth } from "../context/AuthContext";
@@ -13,19 +14,20 @@ import {
   ThumbsDown,
 } from "lucide-react";
 
+// Types
 interface Props {
   comment: Comment & { children?: Comment[] };
   postId: number;
   depth?: number;
 }
-
+// Comment votes types
 interface CommentVote {
   id: number;
   comment_id: number;
   user_id: string;
   vote: number;
 }
-
+// Comment item section
 export const CommentItem = ({ comment, postId, depth = 0 }: Props) => {
   const [showReply, setShowReply] = useState(false);
   const [replyText, setReplyText] = useState("");
