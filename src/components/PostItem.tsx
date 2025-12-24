@@ -1,15 +1,16 @@
+// Import section
 import { type Post } from "./PostList";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router";
 import { Trash2, AlertTriangle, X, Check } from "lucide-react";
 import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
-
+// PostItems types
 interface PostItemProps {
   post: Post;
   variant: "list" | "grid";
 }
-
+// PostItem section
 export const PostItem = ({ post, variant }: PostItemProps) => {
   const isList = variant === "list";
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);

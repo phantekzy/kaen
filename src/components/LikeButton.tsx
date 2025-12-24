@@ -1,19 +1,20 @@
+// Import section
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
 import { supabase } from "../supabase-client";
 import { useAuth } from "../context/AuthContext";
-
+// Props
 interface Props {
   postId: number;
 }
-
+// Vote types
 interface Vote {
   id: number;
   post_id: number;
   user_id: string;
   vote: number;
 }
-
+// Vote section
 const vote = async (voteValue: number, postId: number, userId: string) => {
   const { data: existingVote } = await supabase
     .from("votes")
@@ -37,7 +38,7 @@ const vote = async (voteValue: number, postId: number, userId: string) => {
       .insert({ post_id: postId, user_id: userId, vote: voteValue });
   }
 };
-
+// Like and dislike section
 export const LikeButton = ({ postId }: Props) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -76,7 +77,7 @@ export const LikeButton = ({ postId }: Props) => {
         isPending ? "opacity-50" : ""
       }`}
     >
-      {/* Compact Like */}
+      {/*  Like */}
       <button
         onClick={() => mutate(1)}
         className={`flex items-center gap-1.5 px-3 h-full border-r border-white/5 transition-colors
@@ -93,7 +94,7 @@ export const LikeButton = ({ postId }: Props) => {
         <span className="text-[11px] font-bold">{likes}</span>
       </button>
 
-      {/* Compact Dislike */}
+      {/*  Dislike */}
       <button
         onClick={() => mutate(-1)}
         className={`flex items-center gap-1.5 px-3 h-full transition-colors
