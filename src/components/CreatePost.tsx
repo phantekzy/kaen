@@ -11,7 +11,6 @@ import {
   AlertCircle,
   UploadCloud,
   User,
-  X,
 } from "lucide-react";
 
 interface PostInput {
