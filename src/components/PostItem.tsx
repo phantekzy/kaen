@@ -2,14 +2,17 @@
 import { type Post } from "./PostList";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router";
-import { Trash2, AlertTriangle, X, Check } from "lucide-react";
+import { Trash2, AlertTriangle, X, Check, Heart } from "lucide-react";
 import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 // PostItems types
 interface PostItemProps {
   post: Post;
   variant: "list" | "grid";
 }
+
 // PostItem section
 export const PostItem = ({ post, variant }: PostItemProps) => {
   const isList = variant === "list";
@@ -22,6 +25,19 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
     damping: 40,
     mass: 1,
   } as const;
+
+  const { data: votes = [] } = useQuery({
+    queryKey: ["votes", post.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("votes")
+        .select("*")
+        .eq("post_id", post.id);
+      return data || [];
+    },
+  });
+
+  const likesCount = votes.filter((v: any) => v.vote === 1).length;
 
   useEffect(() => {
     const getSession = async () => {
@@ -164,10 +180,20 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
             <motion.p
               layout
               transition={springTransition}
-              className="text-zinc-400 text-xs md:text-sm line-clamp-2 leading-relaxed font-medium"
+              className="text-zinc-400 text-xs md:text-sm line-clamp-2 leading-relaxed font-medium mb-4"
             >
               {post.content}
             </motion.p>
+
+            {/* Like Counter Section */}
+            <div className="mt-auto flex items-center gap-2 pt-3 border-t border-white/5">
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded-md border border-white/5">
+                <Heart size={10} className="text-pink-600 fill-pink-600" />
+                <span className="text-[10px] font-mono text-zinc-300 font-bold uppercase tracking-tighter">
+                  {likesCount} Likes
+                </span>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       </Link>
