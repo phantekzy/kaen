@@ -116,7 +116,7 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
                 layout
                 transition={springTransition}
                 src={post.image_url}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </motion.div>
           )}
@@ -164,7 +164,7 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
             <motion.p
               layout
               transition={springTransition}
-              className="text-zinc-500 text-xs md:text-sm line-clamp-2 leading-relaxed font-light"
+              className="text-zinc-400 text-xs md:text-sm line-clamp-2 leading-relaxed font-medium"
             >
               {post.content}
             </motion.p>
