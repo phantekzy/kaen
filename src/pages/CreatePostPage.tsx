@@ -14,22 +14,20 @@ export const CreatePostPage = () => {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:20px_20px] sm:bg-[size:40px_40px] pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-pink-600/5 blur-[100px] pointer-events-none" />
 
-      <div className="sticky top-0 z-[50] w-full pointer-events-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-4">
-          <motion.button
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            onClick={() => navigate("/posts")}
-            className="pointer-events-auto flex items-center gap-3 bg-black/80 backdrop-blur-md border border-white/5 p-2 pr-6 rounded-xl group transition-all hover:border-pink-600/50 w-fit"
-          >
-            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-pink-600 group-hover:text-white transition-all">
-              <ArrowLeft size={14} />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 group-hover:text-white transition-colors whitespace-nowrap">
-              Back to Feed
-            </span>
-          </motion.button>
-        </div>
+      {/* BACK BUTTON  */}
+      <div className="relative z-50 max-w-7xl mx-auto px-4 pt-6">
+        <button
+          onClick={() => navigate("/posts")}
+          className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group"
+        >
+          <ArrowLeft
+            size={16}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
+          <span className="text-[10px] font-black uppercase tracking-widest">
+            Back to feed
+          </span>
+        </button>
       </div>
 
       <div className="relative z-10 w-full pt-8 sm:pt-16">
@@ -50,10 +48,8 @@ export const CreatePostPage = () => {
           </motion.div>
         </div>
 
-        {/* AUTH GUARD LOGIC */}
         <div className="w-full max-w-5xl mx-auto px-4 sm:px-10">
           {!user ? (
-            /* --- ACCESS DENIED MESSAGE --- */
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -79,7 +75,6 @@ export const CreatePostPage = () => {
               </button>
             </motion.div>
           ) : (
-            /* --- THE ACTUAL FORM --- */
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

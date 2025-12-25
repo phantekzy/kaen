@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   motion,
@@ -6,13 +6,14 @@ import {
   useTransform,
   AnimatePresence,
 } from "framer-motion";
-import { User } from "lucide-react";
+import { User, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabase-client";
 import { PostDetail } from "../components/PostDetail";
 
 export const PostPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -45,9 +46,23 @@ export const PostPage = () => {
 
   return (
     <div className="min-h-screen bg-[#020202] text-white selection:bg-pink-600/30">
+      <div className="max-w-7xl mx-auto px-4 pt-6">
+        <button
+          onClick={() => navigate("/posts")}
+          className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group"
+        >
+          <ArrowLeft
+            size={16}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
+          <span className="text-[10px] font-black uppercase tracking-widest">
+            Back to feed
+          </span>
+        </button>
+      </div>
+
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 lg:gap-12 p-4 pt-20 md:pt-40">
         <aside className="lg:w-auto shrink-0 z-50">
-          {/* MOBILE*/}
           <div className="lg:hidden flex gap-2 mb-6">
             <div className="w-24 h-24 border border-white/10 rounded-xl overflow-hidden bg-zinc-900 shrink-0">
               {post?.avatar_url ? (
@@ -72,7 +87,6 @@ export const PostPage = () => {
             </div>
           </div>
 
-          {/* DESKTOP STICKY HUD */}
           <div className="hidden lg:flex sticky top-24 flex-col gap-3">
             <motion.div
               layout
