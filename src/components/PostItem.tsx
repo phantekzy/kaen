@@ -2,7 +2,14 @@
 import { type Post } from "./PostList";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router";
-import { Trash2, AlertTriangle, X, Check, Heart } from "lucide-react";
+import {
+  Trash2,
+  AlertTriangle,
+  X,
+  Check,
+  Heart,
+  MessageSquare,
+} from "lucide-react";
 import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -26,6 +33,7 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
     mass: 1,
   } as const;
 
+  // Likes Query
   const { data: votes = [] } = useQuery({
     queryKey: ["votes", post.id],
     queryFn: async () => {
@@ -34,6 +42,19 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
         .select("*")
         .eq("post_id", post.id);
       return data || [];
+    },
+  });
+
+  const { data: commentsCount = 0 } = useQuery({
+    queryKey: ["comments-count", post.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("comments")
+        .select("*", { count: "exact", head: true })
+        .eq("post_id", post.id);
+
+      if (error) throw error;
+      return count || 0;
     },
   });
 
@@ -185,12 +206,19 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
               {post.content}
             </motion.p>
 
-            {/* Like Counter Section */}
-            <div className="mt-auto flex items-center gap-2 pt-3 border-t border-white/5">
+            {/* Metrics Section */}
+            <div className="mt-auto flex items-center gap-3 pt-3 border-t border-white/5">
               <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded-md border border-white/5">
                 <Heart size={10} className="text-pink-600 fill-pink-600" />
                 <span className="text-[10px] font-mono text-zinc-300 font-bold uppercase tracking-tighter">
                   {likesCount} Likes
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded-md border border-white/5">
+                <MessageSquare size={10} className="text-zinc-500" />
+                <span className="text-[10px] font-mono text-zinc-300 font-bold uppercase tracking-tighter">
+                  {commentsCount} Comments
                 </span>
               </div>
             </div>
