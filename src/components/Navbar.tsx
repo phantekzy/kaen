@@ -266,9 +266,7 @@ export const Navbar = () => {
                   <div className="bg-pink-600/20 p-2 rounded-lg">
                     <Plus size={18} className="text-pink-500" />
                   </div>
-                  <span className="font-bold text-sm text-white">
-                    Create New Post
-                  </span>
+                  <span className="font-bold text-sm text-white">Create </span>
                 </Link>
 
                 <button

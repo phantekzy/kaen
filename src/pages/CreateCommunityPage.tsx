@@ -4,7 +4,7 @@ import { ArrowLeft, Lock, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
-export const CreatePostPage = () => {
+export const CreateCommunityPage = () => {
   const navigate = useNavigate();
   const { user, signInWithGitHub } = useAuth();
 
@@ -17,7 +17,7 @@ export const CreatePostPage = () => {
       {/* BACK BUTTON  */}
       <div className="relative z-50 max-w-7xl mx-auto px-4 pt-6">
         <button
-          onClick={() => navigate("/create")}
+          onClick={() => navigate("/posts")}
           className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group"
         >
           <ArrowLeft
@@ -25,7 +25,7 @@ export const CreatePostPage = () => {
             className="group-hover:-translate-x-1 transition-transform"
           />
           <span className="text-[10px] font-black uppercase tracking-widest">
-            Back
+            Back to feed
           </span>
         </button>
       </div>

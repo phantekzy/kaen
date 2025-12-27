@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import { ScrollProgress } from "./components/ScrollProgress";
 import RootLayout from "./components/RootLayout";
+import { SelectCreation } from "./pages/SelectCreation";
 
 function App() {
   const location = useLocation();
@@ -31,10 +32,18 @@ function App() {
               }
             />
             <Route
-              path="/create"
+              path="/create-post"
               element={
                 <RootLayout>
                   <CreatePostPage />
+                </RootLayout>
+              }
+            />
+            <Route
+              path="/create"
+              element={
+                <RootLayout>
+                  <SelectCreation />
                 </RootLayout>
               }
             />
