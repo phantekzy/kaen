@@ -1,3 +1,4 @@
+/* Import section */
 import { useState } from "react";
 import type { Comment } from "./CommentSection";
 import { useAuth } from "../context/AuthContext";
@@ -6,15 +7,16 @@ import { supabase } from "../supabase-client";
 import { Reply, X, Trash2, Pencil, ThumbsUp, ThumbsDown, ChevronDown, ChevronUp } from "lucide-react";
 import { UserBadge } from "./UserBadge";
 
+/* Types  */
 interface Props {
     comment: Comment & { children?: Comment[] };
     postId: number;
     postAuthorId: string;
     depth?: number;
 }
-
 interface CommentVote { id: number; comment_id: number; user_id: string; vote: number; }
 
+/* CommentItem section */
 export const CommentItem = ({ comment, postId, postAuthorId, depth = 0 }: Props) => {
     const [showReply, setShowReply] = useState(false);
     const [showRepliesToggle, setShowRepliesToggle] = useState(false);
