@@ -1,4 +1,3 @@
-/* Import section */
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,8 +15,9 @@ import { LikeButton } from "./LikeButton";
 import { CommentSection } from "./CommentSection";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
-/* Post Detail section */
-export const PostDetail = ({ postId }: { postId: number }) => {
+import { UserBadge } from "./UserBadge";
+
+export const PostDetail = ({ postId, postAuthorId }: { postId: number; postAuthorId: string }) => {
     const [showComments, setShowComments] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -32,11 +32,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
     const { data: post, isLoading } = useQuery({
         queryKey: ["post", postId],
         queryFn: async () => {
-            const { data } = await supabase
-                .from("posts")
-                .select("*")
-                .eq("id", postId)
-                .single();
+            const { data } = await supabase.from("posts").select("*").eq("id", postId).single();
             setEditTitle(data.title);
             setEditContent(data.content);
             return data;
@@ -83,7 +79,6 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                 layout
                 className="relative bg-zinc-900/20 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm shadow-xl"
             >
-                {/* Post Actions */}
                 {isOwner && !isEditing && (
                     <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
                         <AnimatePresence mode="wait">
@@ -116,9 +111,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                                     exit={{ opacity: 0, x: 10 }}
                                     className="flex items-center gap-2 bg-red-600 p-1 rounded-lg border border-red-500"
                                 >
-                                    <span className="text-[10px] font-bold px-2 text-white uppercase">
-                                        Delete Post?
-                                    </span>
+                                    <span className="text-[10px] font-bold px-2 text-white uppercase">Delete Post?</span>
                                     <button
                                         onClick={() => deleteMutation.mutate()}
                                         className="p-1.5 bg-white text-red-600 rounded hover:bg-black hover:text-white transition-all"
@@ -139,11 +132,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
 
                 {post?.image_url && (
                     <div className="w-full bg-black/40 border-b border-white/5">
-                        <img
-                            src={post.image_url}
-                            className="w-full h-auto max-h-[70vh] object-contain mx-auto"
-                            alt=""
-                        />
+                        <img src={post.image_url} className="w-full h-auto max-h-[70vh] object-contain mx-auto" alt="" />
                     </div>
                 )}
 
@@ -151,9 +140,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                     {isEditing ? (
                         <div className="space-y-4">
                             <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-1">
-                                    Title
-                                </label>
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-1">Title</label>
                                 <input
                                     className="w-full bg-white/5 border border-white/10 p-4 text-3xl font-black text-white outline-none rounded-xl focus:border-pink-600 transition-colors"
                                     value={editTitle}
@@ -161,9 +148,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-1">
-                                    Content
-                                </label>
+                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-1">Content</label>
                                 <textarea
                                     className="w-full bg-white/5 border border-white/10 p-4 text-zinc-400 min-h-[250px] outline-none rounded-xl focus:border-pink-600 transition-colors resize-none"
                                     value={editContent}
@@ -187,12 +172,27 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                         </div>
                     ) : (
                         <>
-                            <motion.h1
-                                layout
-                                className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white"
-                            >
+                            <motion.h1 layout className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white">
                                 {post?.title}
                             </motion.h1>
+
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-mono text-pink-600 uppercase font-black tracking-widest">
+                                        {post?.author}
+                                    </span>
+
+                                    <UserBadge
+                                        userId={post?.user_id || ""}
+                                        communityOwnerId={"YOUR_FOUNDER_ID_HERE"}
+                                        postAuthorId={postAuthorId}
+                                    />
+                                </div>
+
+                                <p className="text-zinc-500 font-mono text-[9px] uppercase mt-0">
+                                    {post?.created_at ? new Date(post.created_at).toLocaleDateString() : ""}
+                                </p>
+                            </div>
 
                             <div className="relative">
                                 <motion.div
@@ -228,9 +228,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setShowComments(!showComments)}
                         className={`flex items-center gap-2 px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all
-              ${showComments
-                                ? "bg-pink-600 border-pink-500 text-white"
-                                : "bg-zinc-900/50 border-white/10 text-zinc-500 hover:text-white"
+              ${showComments ? "bg-pink-600 border-pink-500 text-white" : "bg-zinc-900/50 border-white/10 text-zinc-500 hover:text-white"
                             }`}
                     >
                         <MessageSquare size={14} />
@@ -247,7 +245,7 @@ export const PostDetail = ({ postId }: { postId: number }) => {
                         exit={{ opacity: 0, y: 20 }}
                         className="pb-20"
                     >
-                        <CommentSection postId={postId} />
+                        <CommentSection postId={postId} postAuthorId={postAuthorId} />
                     </motion.div>
                 )}
             </AnimatePresence>

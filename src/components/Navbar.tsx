@@ -25,7 +25,7 @@ export const Navbar = () => {
     const navLinks = [
         { name: "Home", link: "/", icon: <Home size={18} /> },
         { name: "Feed", link: "/posts", icon: <LayoutGrid size={18} /> },
-        { name: "Communities", link: "/forums", icon: <Users size={18} /> },
+        { name: "Communities", link: "/communities", icon: <Users size={18} /> },
     ];
 
     // Helper to close menu and execute action

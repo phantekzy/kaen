@@ -1,25 +1,25 @@
 /* Import section */
-import { CreatePost } from "../components/CreatePost";
+import { CreateCommunity } from "../components/CreateCommunity";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Lock, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
-/* Create community section */
+/* Create community page section */
 export const CreateCommunityPage = () => {
     const navigate = useNavigate();
     const { user, signInWithGitHub } = useAuth();
 
     return (
         <div className="bg-black min-h-screen pb-32 relative overflow-hidden">
-            {/* Background Grid */}
+            {/* Background Grid - Advanced Site Design */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:20px_20px] sm:bg-[size:40px_40px] pointer-events-none" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-pink-600/5 blur-[100px] pointer-events-none" />
 
-            {/* BACK BUTTON  */}
+            {/* BACK BUTTON - Matched to CreatePost style */}
             <div className="relative z-50 max-w-7xl mx-auto px-4 pt-6">
                 <button
-                    onClick={() => navigate("/posts")}
+                    onClick={() => navigate("/create")}
                     className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group"
                 >
                     <ArrowLeft
@@ -27,13 +27,13 @@ export const CreateCommunityPage = () => {
                         className="group-hover:-translate-x-1 transition-transform"
                     />
                     <span className="text-[10px] font-black uppercase tracking-widest">
-                        Back to feed
+                        Back
                     </span>
                 </button>
             </div>
 
             <div className="relative z-10 w-full pt-8 sm:pt-16">
-                {/* Header Section */}
+                {/* Header Section - High Impact Typography */}
                 <div className="flex flex-col items-center mb-12 sm:mb-20 px-4 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 15 }}
@@ -42,16 +42,17 @@ export const CreateCommunityPage = () => {
                     >
                         <div className="w-px h-12 bg-gradient-to-b from-transparent to-pink-600 mb-6" />
                         <h1 className="text-[clamp(2.5rem,10vw,8.5rem)] font-black text-white tracking-tighter leading-[0.8] uppercase italic">
-                            DRAFT YOUR
+                            FOUND YOUR
                         </h1>
                         <h1 className="text-pink-600 text-[clamp(2.5rem,10vw,8.5rem)] font-black tracking-tighter leading-[0.8] uppercase italic">
-                            EXPERTISE
+                            NETWORK
                         </h1>
                     </motion.div>
                 </div>
 
                 <div className="w-full max-w-5xl mx-auto px-4 sm:px-10">
                     {!user ? (
+                        /* Unauthorized State */
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -65,7 +66,7 @@ export const CreateCommunityPage = () => {
                                     Unauthorized Access
                                 </h3>
                                 <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest max-w-xs leading-relaxed">
-                                    Only logged-in operators can broadcast technical expertise to
+                                    Only logged-in operators can initialize new community protocols to
                                     the network.
                                 </p>
                             </div>
@@ -77,6 +78,7 @@ export const CreateCommunityPage = () => {
                             </button>
                         </motion.div>
                     ) : (
+                        /* Component Container with Corner Borders */
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -85,7 +87,7 @@ export const CreateCommunityPage = () => {
                         >
                             <div className="absolute -top-4 -left-4 w-10 h-10 border-t border-l border-white/10 pointer-events-none hidden sm:block" />
                             <div className="absolute -bottom-4 -right-4 w-10 h-10 border-b border-r border-white/10 pointer-events-none hidden sm:block" />
-                            <CreatePost />
+                            <CreateCommunity />
                         </motion.div>
                     )}
                 </div>
