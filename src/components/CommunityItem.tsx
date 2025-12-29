@@ -61,7 +61,7 @@ export const CommunityItem = ({ community }: Props) => {
                 )}
             </AnimatePresence>
 
-            <Link to={`/community/${community.id}`} className="block h-full">
+            <Link to="community" className="block h-full">
                 <motion.div
                     layout
                     transition={springTransition}
