@@ -14,6 +14,7 @@ import { SelectCreation } from "./pages/SelectCreation";
 
 import { CreateCommunityPage } from "./pages/CreateCommunityPage";
 import { CommunitiesPage } from "./pages/CommunitiesPage";
+import { CommunityPage } from "./pages/CommunityPage";
 
 /* App section */
 function App() {
@@ -60,7 +61,6 @@ function App() {
                                 </RootLayout>
                             }
                         />
-                        {/* COMMUNITY ROUTES UPDATED TO USE PAGES */}
                         <Route
                             path="/create-community"
                             element={
@@ -77,12 +77,19 @@ function App() {
                                 </RootLayout>
                             }
                         />
-
                         <Route
                             path="/post/:id"
                             element={
                                 <RootLayout>
                                     <PostPage />
+                                </RootLayout>
+                            }
+                        />
+                        <Route
+                            path="/community/:id"
+                            element={
+                                <RootLayout>
+                                    <CommunityPage />
                                 </RootLayout>
                             }
                         />

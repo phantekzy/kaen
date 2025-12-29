@@ -44,11 +44,11 @@ export const PostPage = () => {
         <div className="min-h-screen bg-[#020202] text-white selection:bg-pink-600/30">
             <div className="max-w-7xl mx-auto px-4 pt-6">
                 <button
-                    onClick={() => navigate("/posts")}
+                    onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group"
                 >
                     <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Back to feed</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Back</span>
                 </button>
             </div>
 

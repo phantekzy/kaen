@@ -4,18 +4,20 @@ import { Link } from "react-router";
 import { Trash2, AlertTriangle, X, Check, Heart, MessageSquare } from "lucide-react";
 import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserBadge } from "./UserBadge";
 
 interface PostItemProps {
     post: Post;
     variant: "list" | "grid";
+    onOpenComments?: (id: number) => void; // New prop to trigger the drawer
 }
 
-export const PostItem = ({ post, variant }: PostItemProps) => {
+export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
     const isList = variant === "list";
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
+    const queryClient = useQueryClient();
 
     const springTransition = { type: "spring", stiffness: 400, damping: 40, mass: 1 } as const;
 
@@ -36,6 +38,7 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
     });
 
     const likesCount = votes.filter((v: any) => v.vote === 1).length;
+    const isLiked = votes.some((v: any) => v.user_id === currentUserId);
 
     useEffect(() => {
         const getSession = async () => {
@@ -44,6 +47,19 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
         };
         getSession();
     }, []);
+
+    const handleLike = async (e: React.MouseEvent) => {
+        e.preventDefault(); // Stop the <Link> from firing
+        e.stopPropagation();
+        if (!currentUserId) return;
+
+        if (isLiked) {
+            await supabase.from("votes").delete().eq("post_id", post.id).eq("user_id", currentUserId);
+        } else {
+            await supabase.from("votes").insert({ post_id: post.id, user_id: currentUserId, vote: 1 });
+        }
+        queryClient.invalidateQueries({ queryKey: ["votes", post.id] });
+    };
 
     const handleDelete = async () => {
         const { error } = await supabase.from("posts").delete().eq("id", post.id);
@@ -63,7 +79,6 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
                         <div className="p-3 bg-red-500/10 rounded-full mb-4">
                             <AlertTriangle className="text-red-500" size={20} />
                         </div>
-
                         <div className="flex flex-row items-center gap-2">
                             <button
                                 onClick={(e) => { e.preventDefault(); setIsConfirming(false); }}
@@ -71,7 +86,6 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
                             >
                                 <X size={12} /> Abort
                             </button>
-
                             <button
                                 onClick={(e) => { e.preventDefault(); handleDelete(); }}
                                 className="flex items-center gap-2 px-4 py-2 bg-red-600/20 rounded-lg text-red-500 text-[10px] uppercase font-bold border border-red-500/50 whitespace-nowrap hover:bg-red-600 hover:text-white transition-all"
@@ -110,7 +124,7 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
 
                             {currentUserId === post.user_id && (
                                 <button
-                                    onClick={(e) => { e.preventDefault(); setIsConfirming(true); }}
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsConfirming(true); }}
                                     className="text-zinc-600 hover:text-red-500 transition-colors"
                                 >
                                     <Trash2 size={14} />
@@ -122,21 +136,32 @@ export const PostItem = ({ post, variant }: PostItemProps) => {
                             <h3 className="text-white font-bold text-lg uppercase tracking-tighter mb-2 group-hover:text-pink-500 transition-colors">
                                 {post.title}
                             </h3>
-
                             <p className="text-zinc-400 text-xs line-clamp-2 mb-4 leading-relaxed">
                                 {post.content}
                             </p>
                         </div>
 
+                        {/* INTERACTION BAR */}
                         <div className="mt-auto flex gap-4 pt-4 pb-2 px-4 border-t border-white/5 font-mono text-[10px] text-zinc-500">
-                            <span className="flex items-center gap-1.5 hover:text-pink-500 transition-colors">
-                                <Heart size={12} className="text-pink-600 fill-pink-600" />
+                            <button
+                                onClick={handleLike}
+                                className={`flex items-center gap-1.5 transition-colors ${isLiked ? "text-pink-500" : "hover:text-pink-500"}`}
+                            >
+                                <Heart size={12} className={isLiked ? "fill-pink-500" : ""} />
                                 {likesCount}
-                            </span>
-                            <span className="flex items-center gap-1.5 hover:text-white transition-colors">
+                            </button>
+
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onOpenComments?.(post.id);
+                                }}
+                                className="flex items-center gap-1.5 hover:text-white transition-colors"
+                            >
                                 <MessageSquare size={12} />
                                 {commentsCount}
-                            </span>
+                            </button>
                         </div>
                     </div>
                 </motion.div>
