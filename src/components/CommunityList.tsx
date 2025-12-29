@@ -125,7 +125,6 @@ export const CommunityList = () => {
                     <CommunityItem
                         key={community.id}
                         community={community}
-                        variant={viewMode}
                     />
                 ))}
             </motion.div>
