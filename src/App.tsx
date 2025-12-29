@@ -12,16 +12,19 @@ import { ScrollProgress } from "./components/ScrollProgress";
 import RootLayout from "./components/RootLayout";
 import { SelectCreation } from "./pages/SelectCreation";
 
+import { CreateCommunityPage } from "./pages/CreateCommunityPage";
+import { CommunitiesPage } from "./pages/CommunitiesPage";
+
 /* App section */
 function App() {
     const location = useLocation();
 
+    /* Return section */
     return (
         <div className="min-h-screen bg-black text-gray-100 pt-20">
             <Navbar />
             <ScrollToTop />
             <ScrollProgress />
-
             <main className="container mx-auto px-4 py-6">
                 <AnimatePresence mode="wait">
                     <Routes location={location} key={location.pathname}>
@@ -34,18 +37,18 @@ function App() {
                             }
                         />
                         <Route
-                            path="/create-post"
-                            element={
-                                <RootLayout>
-                                    <CreatePostPage />
-                                </RootLayout>
-                            }
-                        />
-                        <Route
                             path="/create"
                             element={
                                 <RootLayout>
                                     <SelectCreation />
+                                </RootLayout>
+                            }
+                        />
+                        <Route
+                            path="/create-post"
+                            element={
+                                <RootLayout>
+                                    <CreatePostPage />
                                 </RootLayout>
                             }
                         />
@@ -57,6 +60,24 @@ function App() {
                                 </RootLayout>
                             }
                         />
+                        {/* COMMUNITY ROUTES UPDATED TO USE PAGES */}
+                        <Route
+                            path="/create-community"
+                            element={
+                                <RootLayout>
+                                    <CreateCommunityPage />
+                                </RootLayout>
+                            }
+                        />
+                        <Route
+                            path="/communities"
+                            element={
+                                <RootLayout>
+                                    <CommunitiesPage />
+                                </RootLayout>
+                            }
+                        />
+
                         <Route
                             path="/post/:id"
                             element={
