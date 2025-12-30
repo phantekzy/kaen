@@ -1,25 +1,40 @@
 import { type Post } from "./PostList";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router";
-import { Trash2, AlertTriangle, X, Check, Heart, MessageSquare } from "lucide-react";
+import { Link, useNavigate } from "react-router"; // Added useNavigate
+import { Trash2, AlertTriangle, X, Check, Heart, MessageSquare, Globe } from "lucide-react"; // Added Globe icon
 import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserBadge } from "./UserBadge";
 
 interface PostItemProps {
-    post: Post;
+    post: Post & { community_id?: number }; // Ensure community_id is available
     variant: "list" | "grid";
     onOpenComments?: (id: number) => void;
 }
 
 export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
     const isList = variant === "list";
+    const navigate = useNavigate();
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
     const [isConfirming, setIsConfirming] = useState(false);
     const queryClient = useQueryClient();
 
     const springTransition = { type: "spring", stiffness: 400, damping: 40, mass: 1 } as const;
+
+    // --- FETCH COMMUNITY DATA ---
+    const { data: community } = useQuery({
+        queryKey: ["community", post.community_id],
+        enabled: !!post.community_id,
+        queryFn: async () => {
+            const { data } = await supabase
+                .from("communities")
+                .select("id, name")
+                .eq("id", post.community_id)
+                .single();
+            return data;
+        },
+    });
 
     const { data: votes = [] } = useQuery({
         queryKey: ["votes", post.id],
@@ -81,13 +96,13 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                         </div>
                         <div className="flex flex-row items-center gap-2">
                             <button
-                                onClick={(e) => { e.preventDefault(); setIsConfirming(false); }}
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsConfirming(false); }}
                                 className="flex items-center gap-2 px-4 py-2 bg-zinc-900 rounded-lg text-zinc-400 text-[10px] uppercase font-bold border border-white/5 whitespace-nowrap transition-colors hover:text-white"
                             >
                                 <X size={12} /> Abort
                             </button>
                             <button
-                                onClick={(e) => { e.preventDefault(); handleDelete(); }}
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(); }}
                                 className="flex items-center gap-2 px-4 py-2 bg-red-600/20 rounded-lg text-red-500 text-[10px] uppercase font-bold border border-red-500/50 whitespace-nowrap hover:bg-red-600 hover:text-white transition-all"
                             >
                                 <Check size={12} /> Execute
@@ -118,7 +133,24 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                     <div className="flex-1 w-full flex flex-col py-2">
                         <div className="flex items-center justify-between mb-3 px-4">
                             <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-mono text-pink-600 uppercase font-black">{post.author}</span>
+                                {/* COMMUNITY BADGE (Only shows if community exists) */}
+                                {community && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            navigate(`/community/${community.id}`);
+                                        }}
+                                        className="flex items-center gap-1.5 px-2 py-0.5 bg-pink-600/10 border border-pink-500/20 rounded-md group/comm"
+                                    >
+                                        <Globe size={10} className="text-pink-500" />
+                                        <span className="text-[9px] font-black text-pink-500 uppercase tracking-tighter group-hover/comm:text-white transition-colors">
+                                            {community.name}
+                                        </span>
+                                    </button>
+                                )}
+
+                                <span className="text-[10px] font-mono text-zinc-500 uppercase font-black">{post.author}</span>
                                 <UserBadge userId={post.user_id} communityOwnerId="" postAuthorId={post.user_id} enableAuthorBadge={false} />
                             </div>
 

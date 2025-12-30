@@ -1,11 +1,9 @@
-/* Import section */
 import { CreatePost } from "../components/CreatePost";
 import { useNavigate } from "react-router";
 import { ArrowLeft, Lock, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 
-/* Create post page section */
 export const CreatePostPage = () => {
     const navigate = useNavigate();
     const { user, signInWithGitHub } = useAuth();
@@ -16,19 +14,14 @@ export const CreatePostPage = () => {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:20px_20px] sm:bg-[size:40px_40px] pointer-events-none" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-pink-600/5 blur-[100px] pointer-events-none" />
 
-            {/* BACK BUTTON  */}
+            {/* Back Button */}
             <div className="relative z-50 max-w-7xl mx-auto px-4 pt-6">
                 <button
-                    onClick={() => navigate("/create")}
+                    onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group"
                 >
-                    <ArrowLeft
-                        size={16}
-                        className="group-hover:-translate-x-1 transition-transform"
-                    />
-                    <span className="text-[10px] font-black uppercase tracking-widest">
-                        Back
-                    </span>
+                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Back</span>
                 </button>
             </div>
 
@@ -40,13 +33,17 @@ export const CreatePostPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex flex-col items-center"
                     >
-                        <div className="w-px h-12 bg-gradient-to-b from-transparent to-pink-600 mb-6" />
-                        <h1 className="text-[clamp(2.5rem,10vw,8.5rem)] font-black text-white tracking-tighter leading-[0.8] uppercase italic">
-                            DRAFT YOUR
+                        <span className="text-pink-600 text-[10px] font-black uppercase tracking-[0.4em] block mb-4">
+                            New Broadcast
+                        </span>
+                        <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase mb-4">
+                            CREATE POST
                         </h1>
-                        <h1 className="text-pink-600 text-[clamp(2.5rem,10vw,8.5rem)] font-black tracking-tighter leading-[0.8] uppercase italic">
-                            EXPERTISE
-                        </h1>
+                        <p className="max-w-md text-zinc-500 text-[10px] font-bold uppercase tracking-[0.2em] leading-relaxed">
+                            Share your expertise, technical updates, and projects.
+                            Broadcast your transmission to the network feed below.
+                        </p>
+                        <div className="w-12 h-[2px] bg-pink-600 mt-8" />
                     </motion.div>
                 </div>
 
@@ -61,12 +58,9 @@ export const CreatePostPage = () => {
                                 <Lock size={30} />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-xl font-black text-white uppercase tracking-widest">
-                                    Unauthorized Access
-                                </h3>
+                                <h3 className="text-xl font-black text-white uppercase tracking-widest">Unauthorized Access</h3>
                                 <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest max-w-xs leading-relaxed">
-                                    Only logged-in operators can broadcast technical expertise to
-                                    the network.
+                                    Only logged-in operators can broadcast technical expertise to the network.
                                 </p>
                             </div>
                             <button
@@ -95,9 +89,7 @@ export const CreatePostPage = () => {
             <div className="mt-24 flex justify-center opacity-20">
                 <div className="flex items-center gap-4">
                     <div className="w-1 h-1 rounded-full bg-pink-600 animate-pulse" />
-                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-[1em]">
-                        Authorized_Session
-                    </span>
+                    <span className="text-[8px] font-black text-zinc-400 uppercase tracking-[1em]">Kean_Network_Node</span>
                     <div className="w-1 h-1 rounded-full bg-pink-600 animate-pulse" />
                 </div>
             </div>

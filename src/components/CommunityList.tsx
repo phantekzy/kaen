@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
 import { CommunityItem } from "./CommunityItem";
-import { LayoutGrid, List, Loader2 } from "lucide-react";
-import { motion, useScroll } from "framer-motion";
+import { LayoutGrid, List, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, useScroll, AnimatePresence } from "framer-motion";
+
 /* Types */
 export interface Community {
     id: number;
@@ -24,9 +25,13 @@ export const fetchCommunities = async (): Promise<Community[]> => {
     if (error) throw new Error(error.message);
     return data as Community[];
 };
+
 /* Community lists */
 export const CommunityList = () => {
     const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+    const [currentPage, setCurrentPage] = useState(1);
+    const communitiesPerPage = 4; // Set to 4 items per page
+
     const { scrollY } = useScroll();
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -50,10 +55,22 @@ export const CommunityList = () => {
         );
     }
 
+    // Pagination Logic
+    const totalItems = data?.length || 0;
+    const totalPages = Math.ceil(totalItems / communitiesPerPage);
+    const indexOfLastItem = currentPage * communitiesPerPage;
+    const indexOfFirstItem = indexOfLastItem - communitiesPerPage;
+    const currentCommunities = data?.slice(indexOfFirstItem, indexOfLastItem);
+
+    const paginate = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <div className="w-full pb-32">
-            {/* STICKY SWITCHER  */}
-            <div className="hidden md:block sticky top-24 z-50 w-full mb-12">
+            {/* STICKY SWITCHER */}
+            <div className="hidden md:block sticky top-24 z-40 w-full mb-12">
                 <motion.div
                     layout
                     transition={{ type: "spring", stiffness: 250, damping: 30, mass: 0.8 }}
@@ -78,7 +95,7 @@ export const CommunityList = () => {
                             Network
                         </h2>
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-1">
-                            {data?.length} Communities
+                            {totalItems} Communities
                         </p>
                     </motion.div>
 
@@ -113,22 +130,65 @@ export const CommunityList = () => {
                     Network
                 </h2>
                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em] mt-2">
-                    {data?.length} Communities
+                    {totalItems} Communities
                 </p>
             </div>
 
             <motion.div
                 layout
-                className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1 max-w-4xl mx-auto"}`}
+                className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2" : "grid-cols-1 max-w-4xl mx-auto"}`}
             >
-                {data?.map((community) => (
-                    <CommunityItem
-                        key={community.id}
-                        community={community}
-                    />
-                ))}
+                <AnimatePresence mode="popLayout">
+                    {currentCommunities?.map((community) => (
+                        <motion.div
+                            key={community.id}
+                            layout
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <CommunityItem community={community} />
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </motion.div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="mt-20 flex justify-center items-center gap-4">
+                    <button
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="p-2 text-zinc-500 hover:text-white disabled:opacity-0 transition-all"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+
+                    <div className="flex gap-2">
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i + 1}
+                                onClick={() => paginate(i + 1)}
+                                className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all border ${currentPage === i + 1
+                                    ? "bg-pink-600 border-pink-500 text-white shadow-[0_0_20px_rgba(219,39,119,0.3)]"
+                                    : "text-zinc-500 hover:text-white bg-white/5 border-white/5 hover:border-white/10"
+                                    }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="p-2 text-zinc-500 hover:text-white disabled:opacity-0 transition-all"
+                    >
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
-

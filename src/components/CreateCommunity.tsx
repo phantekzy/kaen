@@ -28,12 +28,12 @@ export const CreateCommunity = () => {
     const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
     const { user } = useAuth();
     const navigate = useNavigate();
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
         mutationFn: createCommunity,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["communities"] })
+            queryClient.invalidateQueries({ queryKey: ["communities"] });
             setStatus("success");
             setName("");
             setDescription("");
@@ -108,8 +108,9 @@ export const CreateCommunity = () => {
                             <label className="text-[9px] font-black text-zinc-600 uppercase tracking-widest px-1">Community Identity</label>
                             <input
                                 required
-                                className="w-full bg-white/5 border border-white/10 p-4 text-xl font-bold text-white outline-none rounded-xl focus:border-pink-600 transition-all placeholder:text-zinc-600 placeholder:font-medium placeholder:text-base"
-                                placeholder="How should this community be titled?"
+                                className="w-full bg-white/5 border border-white/10 p-4 text-xl font-bold text-white outline-none rounded-xl focus:border-pink-600 transition-all 
+                                placeholder:text-zinc-700 placeholder:text-sm md:placeholder:text-lg placeholder:font-black placeholder:uppercase placeholder:tracking-tighter"
+                                placeholder="Enter Community Title..."
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                             />
@@ -119,7 +120,8 @@ export const CreateCommunity = () => {
                             <label className="text-[9px] font-black text-zinc-600 uppercase tracking-widest px-1">Protocol Scope</label>
                             <textarea
                                 required
-                                className="w-full bg-white/5 border border-white/10 p-4 text-zinc-400 min-h-[250px] outline-none rounded-xl focus:border-pink-600 transition-all resize-none text-sm placeholder:text-zinc-600"
+                                className="w-full bg-white/5 border border-white/10 p-4 text-zinc-400 min-h-[250px] outline-none rounded-xl focus:border-pink-600 transition-all resize-none text-sm 
+                                placeholder:text-zinc-700 placeholder:text-[10px] md:placeholder:text-sm placeholder:font-bold placeholder:uppercase placeholder:tracking-widest"
                                 placeholder="Describe the mission of this transmission..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}

@@ -3,7 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase-client";
 import { PostItem } from "./PostItem";
 import { LikeButton } from "./LikeButton";
-import { Loader2, X, Send, MessageCircle, Trash2, Edit3, ChevronDown, ChevronUp, Lock, ArrowLeft, Plus, Minus, ThumbsUp, ThumbsDown } from "lucide-react";
+import {
+    Loader2, X, Send, MessageCircle, Trash2, Edit3,
+    ChevronDown, ChevronUp, Lock, ArrowLeft, Plus,
+    Minus, ThumbsUp, ThumbsDown, ChevronLeft, ChevronRight, Layers
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UserBadge } from "./UserBadge";
 import { useAuth } from "../context/AuthContext";
@@ -15,7 +19,6 @@ interface Props {
     communityOwnerId?: string;
 }
 
-// --- COMMENT VOTING COMPONENT ---
 const CommentLikeButton = ({ commentId }: { commentId: number }) => {
     const { user } = useAuth();
     const queryClient = useQueryClient();
@@ -31,7 +34,13 @@ const CommentLikeButton = ({ commentId }: { commentId: number }) => {
     const { mutate: handleVote, isPending } = useMutation({
         mutationFn: async (voteValue: number) => {
             if (!user) return;
-            const { data: existing } = await supabase.from("comment_votes").select("*").eq("comment_id", commentId).eq("user_id", user.id).maybeSingle();
+            const { data: existing } = await supabase
+                .from("comment_votes")
+                .select("*")
+                .eq("comment_id", commentId)
+                .eq("user_id", user.id)
+                .maybeSingle();
+
             if (existing) {
                 if (existing.vote === voteValue) {
                     await supabase.from("comment_votes").delete().eq("id", existing.id);
@@ -39,7 +48,11 @@ const CommentLikeButton = ({ commentId }: { commentId: number }) => {
                     await supabase.from("comment_votes").update({ vote: voteValue }).eq("id", existing.id);
                 }
             } else {
-                await supabase.from("comment_votes").insert({ comment_id: commentId, user_id: user.id, vote: voteValue });
+                await supabase.from("comment_votes").insert({
+                    comment_id: commentId,
+                    user_id: user.id,
+                    vote: voteValue
+                });
             }
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comment_votes", commentId] })
@@ -63,7 +76,6 @@ const CommentLikeButton = ({ commentId }: { commentId: number }) => {
     );
 };
 
-// --- RECURSIVE COMMENT COMPONENT ---
 const RecursiveComment = ({ comment, currentUserId, communityOwnerId, postAuthorId, onReply, onRefresh, onError }: any) => {
     const [showReplies, setShowReplies] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -86,7 +98,11 @@ const RecursiveComment = ({ comment, currentUserId, communityOwnerId, postAuthor
     return (
         <div className="group flex gap-4">
             <div className="w-9 h-9 rounded-full bg-zinc-900 border border-white/10 shrink-0 flex items-center justify-center overflow-hidden">
-                {comment.avatar_url ? <img src={comment.avatar_url} className="w-full h-full object-cover" alt="" /> : <span className="text-[10px] font-black text-pink-600">{comment.author?.[0]}</span>}
+                {comment.avatar_url ? (
+                    <img src={comment.avatar_url} className="w-full h-full object-cover" alt="" />
+                ) : (
+                    <span className="text-[10px] font-black text-pink-600">{comment.author?.[0]}</span>
+                )}
             </div>
             <div className="flex-1 space-y-2">
                 <div className="flex items-center justify-between">
@@ -128,7 +144,7 @@ const RecursiveComment = ({ comment, currentUserId, communityOwnerId, postAuthor
                         {comment.children?.length > 0 && (
                             <button onClick={() => setShowReplies(!showReplies)} className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-pink-600">
                                 {showReplies ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-                                {comment.children.length} {comment.children.length === 1 ? 'replie' : 'replies'}
+                                {comment.children.length} {comment.children.length === 1 ? 'reply' : 'replies'}
                             </button>
                         )}
                     </div>
@@ -161,6 +177,10 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
     const [notification, setNotification] = useState<{ msg: string, type: 'error' | 'success' } | null>(null);
     const [descExpanded, setDescExpanded] = useState(false);
 
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 6;
+
     const showToast = (msg: string, type: 'error' | 'success' = 'success') => {
         setNotification({ msg, type });
         setTimeout(() => setNotification(null), 3000);
@@ -181,6 +201,19 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
             return data || [];
         },
     });
+
+    // Pagination Logic
+    const totalPosts = posts?.length || 0;
+    const totalPages = Math.ceil(totalPosts / postsPerPage);
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts?.slice(indexOfFirstPost, indexOfLastPost);
+
+    const paginate = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+        const element = document.getElementById("posts-grid");
+        if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     const activePost = posts?.find(p => p.id === selectedPostId);
     const communityName = community?.name || "Loading";
@@ -237,6 +270,7 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
 
     return (
         <div className={`w-full pb-32 ${selectedPostId ? "lg:h-screen lg:overflow-hidden" : ""}`}>
+            {/* Header / Nav */}
             <div className="max-w-7xl mx-auto px-4 pt-6 relative z-50">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors group cursor-pointer">
                     <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
@@ -277,24 +311,80 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
                             </button>
                             <div className="flex flex-col items-end gap-1">
                                 <span className="text-[10px] text-zinc-700 font-black uppercase tracking-[0.4em]">Total Posts</span>
-                                <span className="text-7xl font-mono text-white tracking-tighter leading-none">{posts?.length?.toString().padStart(2, '0') || "00"}</span>
+                                <span className="text-7xl font-mono text-white tracking-tighter leading-none">{totalPosts.toString().padStart(2, '0')}</span>
                             </div>
                         </motion.div>
                     </div>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {posts?.map((post) => (
-                        <motion.div key={post.id} className="group flex flex-col bg-zinc-900/20 border border-white/5 p-4 rounded-[32px] transition-all hover:bg-zinc-900/40">
-                            <PostItem post={post} variant="grid" onOpenComments={(id) => setSelectedPostId(id)} />
-                            <button onClick={() => setSelectedPostId(post.id)} className="mt-6 flex items-center justify-center gap-2 py-4 bg-white/5 hover:bg-pink-600 transition-all rounded-2xl border border-white/5 text-[10px] font-black uppercase text-zinc-500 hover:text-white">
-                                <MessageCircle size={14} /> Open Comments
+                <div id="posts-grid">
+                    {totalPosts === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex flex-col items-center justify-center py-40 border border-dashed border-white/10 rounded-[40px] bg-white/[0.01]"
+                        >
+                            <div className="p-6 bg-white/5 rounded-full mb-6 relative">
+                                <Layers size={40} className="text-zinc-800" />
+                                <Plus size={20} className="text-pink-600 absolute -bottom-1 -right-1" />
+                            </div>
+                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter italic mb-2">
+                                Empty Community
+                            </h2>
+                            <p className="text-zinc-600 text-[10px] uppercase tracking-[0.3em] mb-8">
+                                No data transmissions found in this community.
+                            </p>
+                            <button
+                                onClick={() => navigate('/create-post')}
+                                className="px-8 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-pink-600 hover:text-white transition-all active:scale-95"
+                            >
+                                Initialize First Post
                             </button>
                         </motion.div>
-                    ))}
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <AnimatePresence mode="popLayout">
+                                {currentPosts?.map((post) => (
+                                    <motion.div
+                                        key={post.id}
+                                        layout
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        className="group flex flex-col bg-zinc-900/20 border border-white/5 p-4 rounded-[32px] transition-all hover:bg-zinc-900/40"
+                                    >
+                                        <PostItem post={post} variant="grid" onOpenComments={(id) => setSelectedPostId(id)} />
+                                        <button onClick={() => setSelectedPostId(post.id)} className="mt-6 flex items-center justify-center gap-2 py-4 bg-white/5 hover:bg-pink-600 transition-all rounded-2xl border border-white/5 text-[10px] font-black uppercase text-zinc-500 hover:text-white">
+                                            <MessageCircle size={14} /> Open Comments
+                                        </button>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="mt-20 flex justify-center items-center gap-4">
+                        <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="p-2 text-zinc-500 hover:text-white disabled:opacity-0 transition-all">
+                            <ChevronLeft size={20} />
+                        </button>
+                        <div className="flex gap-2">
+                            {Array.from({ length: totalPages }, (_, i) => (
+                                <button key={i + 1} onClick={() => paginate(i + 1)} className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all border ${currentPage === i + 1 ? "bg-pink-600 border-pink-500 text-white shadow-[0_0_20px_rgba(219,39,119,0.3)]" : "text-zinc-500 hover:text-white bg-white/5 border-white/5"}`}>
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                        <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} className="p-2 text-zinc-500 hover:text-white disabled:opacity-0 transition-all">
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+                )}
             </div>
 
+            {/* Comment Drawer / Post Modal */}
             <AnimatePresence>
                 {selectedPostId && activePost && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex flex-col lg:flex-row bg-black/95 backdrop-blur-xl">
@@ -313,7 +403,6 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
                                                 <div className="h-8 w-[1px] bg-white/10 mx-2" />
                                                 <UserBadge userId={activePost.user_id} communityOwnerId={communityOwnerId || community?.owner_id} postAuthorId={activePost.user_id} />
                                             </div>
-                                            {/* LIKE BUTTON ONLY IN OPEN VIEW */}
                                             <LikeButton postId={activePost.id} />
                                         </div>
                                     </div>
@@ -354,7 +443,7 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
                             <div className="p-4 bg-zinc-900 border-t border-white/10 shrink-0 pb-10 lg:pb-4">
                                 {!user ? (
                                     <button onClick={() => navigate('/auth')} className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 px-5 flex items-center justify-center gap-3 text-zinc-500 hover:text-white transition-all">
-                                        <Lock size={14} /> <span className="text-[10px] font-black uppercase italic">You should log in to comment</span>
+                                        <Lock size={14} /> <span className="text-[10px] font-black uppercase italic">Login to comment</span>
                                     </button>
                                 ) : (
                                     <>
@@ -373,6 +462,7 @@ export const CommunityDisplay = ({ communityId, communityOwnerId }: Props) => {
                 )}
             </AnimatePresence>
 
+            {/* Notifications */}
             <AnimatePresence>
                 {notification && (
                     <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} className={`fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-2xl ${notification.type === 'error' ? 'bg-red-500/10 border-red-500/50 text-red-500' : 'bg-pink-600 text-white border-pink-500'}`}>
