@@ -37,7 +37,7 @@ export const SearchResults = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black pt-20 pb-20">
+        <div className="min-h-screen bg-black pt-5 pb-20">
             <div className="max-w-[1100px] mx-auto px-4 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
 
                 <main>
