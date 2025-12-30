@@ -9,7 +9,7 @@ import {
     Edit3,
     Check,
     X,
-    Globe, // Added
+    Globe,
 } from "lucide-react";
 import { supabase } from "../supabase-client";
 import { LikeButton } from "./LikeButton";
@@ -40,7 +40,6 @@ export const PostDetail = ({ postId, postAuthorId }: { postId: number; postAutho
         },
     });
 
-    // --- Added Community Fetch ---
     const { data: community } = useQuery({
         queryKey: ["community", post?.community_id],
         enabled: !!post?.community_id,
@@ -138,9 +137,9 @@ export const PostDetail = ({ postId, postAuthorId }: { postId: number; postAutho
                                 {post?.title}
                             </motion.h1>
 
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-2">
-                                    {/* Added Community Breadcrumb */}
+                            {/* RESPONSIVE BADGE WRAPPER */}
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                                <div className="flex flex-wrap items-center gap-2">
                                     {community && (
                                         <>
                                             <button onClick={() => navigate(`/community/${community.id}`)} className="flex items-center gap-1 text-[10px] font-black text-pink-600 uppercase hover:text-white transition-colors">

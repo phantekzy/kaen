@@ -1,14 +1,14 @@
 import { type Post } from "./PostList";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link, useNavigate } from "react-router"; // Added useNavigate
-import { Trash2, AlertTriangle, X, Check, Heart, MessageSquare, Globe } from "lucide-react"; // Added Globe icon
+import { Link, useNavigate } from "react-router";
+import { Trash2, AlertTriangle, X, Check, Heart, MessageSquare, Globe } from "lucide-react";
 import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserBadge } from "./UserBadge";
 
 interface PostItemProps {
-    post: Post & { community_id?: number }; // Ensure community_id is available
+    post: Post & { community_id?: number };
     variant: "list" | "grid";
     onOpenComments?: (id: number) => void;
 }
@@ -119,7 +119,7 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                     layout
                     transition={springTransition}
                     className={`bg-zinc-900/30 border border-white/5 overflow-hidden rounded-2xl h-full backdrop-blur-sm
-                        ${isList ? "flex flex-col md:flex-row p-4 gap-6 items-center" : "flex flex-col"}`}
+                        ${isList ? "flex flex-col md:flex-row p-3 md:p-4 gap-4 md:gap-6 items-start md:items-center" : "flex flex-col"}`}
                 >
                     {post.image_url && (
                         <div className={`${isList ? "w-full md:w-56 shrink-0" : "w-full"} aspect-video overflow-hidden rounded-xl bg-black/20`}>
@@ -132,10 +132,9 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                         </div>
                     )}
 
-                    <div className="flex-1 w-full flex flex-col py-2">
-                        <div className="flex items-center justify-between mb-3 px-4">
-                            <div className="flex items-center gap-2">
-                                {/* COMMUNITY BADGE (Only shows if community exists) */}
+                    <div className="flex-1 w-full flex flex-col py-1">
+                        <div className="flex flex-wrap items-center justify-between gap-y-3 mb-3 px-3 md:px-4">
+                            <div className="flex flex-wrap items-center gap-2 min-w-0">
                                 {community && (
                                     <button
                                         onClick={(e) => {
@@ -143,7 +142,7 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                                             e.stopPropagation();
                                             navigate(`/community/${community.id}`);
                                         }}
-                                        className="flex items-center gap-1.5 px-2 py-0.5 bg-pink-600/10 border border-pink-500/20 rounded-md group/comm"
+                                        className="flex items-center gap-1.5 px-2 py-0.5 bg-pink-600/10 border border-pink-500/20 rounded-md group/comm shrink-0"
                                     >
                                         <Globe size={10} className="text-pink-500" />
                                         <span className="text-[9px] font-black text-pink-500 uppercase tracking-tighter group-hover/comm:text-white transition-colors">
@@ -152,22 +151,26 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                                     </button>
                                 )}
 
-                                <span className="text-[10px] font-mono text-zinc-500 uppercase font-black">{post.author}</span>
-                                <UserBadge userId={post.user_id} communityOwnerId="" postAuthorId={post.user_id} enableAuthorBadge={false} />
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <span className="text-[10px] font-mono text-zinc-500 uppercase font-black truncate max-w-[100px]">
+                                        {post.author}
+                                    </span>
+                                    <UserBadge userId={post.user_id} communityOwnerId="" postAuthorId={post.user_id} enableAuthorBadge={false} />
+                                </div>
                             </div>
 
                             {currentUserId === post.user_id && (
                                 <button
                                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsConfirming(true); }}
-                                    className="text-zinc-600 hover:text-red-500 transition-colors"
+                                    className="text-zinc-600 hover:text-red-500 transition-colors ml-auto"
                                 >
                                     <Trash2 size={14} />
                                 </button>
                             )}
                         </div>
 
-                        <div className="px-4">
-                            <h3 className="text-white font-bold text-lg uppercase tracking-tighter mb-2 group-hover:text-pink-500 transition-colors">
+                        <div className="px-3 md:px-4">
+                            <h3 className="text-white font-bold text-base md:text-lg uppercase tracking-tighter mb-2 group-hover:text-pink-500 transition-colors line-clamp-2">
                                 {post.title}
                             </h3>
                             <p className="text-zinc-400 text-xs line-clamp-2 mb-4 leading-relaxed">
@@ -175,7 +178,7 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                             </p>
                         </div>
 
-                        <div className="mt-auto flex gap-4 pt-4 pb-2 px-4 border-t border-white/5 font-mono text-[10px] text-zinc-500">
+                        <div className="mt-auto flex gap-4 pt-4 pb-2 px-3 md:px-4 border-t border-white/5 font-mono text-[10px] text-zinc-500">
                             <button
                                 onClick={handleLike}
                                 className={`flex items-center gap-1.5 transition-colors ${isLiked ? "text-pink-500" : "hover:text-pink-500"}`}

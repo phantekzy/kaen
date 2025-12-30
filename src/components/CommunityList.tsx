@@ -30,7 +30,7 @@ export const fetchCommunities = async (): Promise<Community[]> => {
 export const CommunityList = () => {
     const [viewMode, setViewMode] = useState<"list" | "grid">("list");
     const [currentPage, setCurrentPage] = useState(1);
-    const communitiesPerPage = 4; // Set to 4 items per page
+    const communitiesPerPage = 4;
 
     const { scrollY } = useScroll();
     const [isScrolled, setIsScrolled] = useState(false);

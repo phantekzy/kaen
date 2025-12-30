@@ -44,11 +44,11 @@ export const Posts = () => {
                 ))}
             </div>
 
-            <div className="relative z-10 max-w-7xl mx-auto pt-24 pb-32 px-6">
+            <div className="relative z-10 max-w-7xl mx-auto pt-4 pb-32 px-6">
                 <header className="mb-16 border-b border-white/5 pb-10">
                     <div className="flex items-center gap-3 mb-6">
                         <span className="text-pink-600 font-black text-[10px] uppercase tracking-[0.5em]">
-                            Kaen / Archive
+                            Kaen / Posts
                         </span>
                     </div>
 

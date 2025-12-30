@@ -23,7 +23,7 @@ function App() {
 
     /* Return section */
     return (
-        <div className="min-h-screen bg-black text-gray-100 pt-20">
+        <div className="min-h-screen bg-black text-gray-100 pt-20 max-sm:pt-5">
             <Navbar />
             <ScrollToTop />
             <ScrollProgress />
