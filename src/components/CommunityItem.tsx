@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion"
-import { Trash2, AlertTriangle, X, Check, Globe, ArrowRight } from "lucide-react"
+import { Trash2, AlertTriangle, X, Check, Globe, ArrowRight, Layers } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "../supabase-client"
 import { Link } from "react-router"
@@ -12,6 +12,7 @@ interface Props {
 export const CommunityItem = ({ community }: Props) => {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
     const [isConfirming, setIsConfirming] = useState(false)
+    const [postCount, setPostCount] = useState<number>(0)
 
     const springTransition = { type: "spring", stiffness: 400, damping: 40, mass: 1 } as const
 
@@ -20,8 +21,19 @@ export const CommunityItem = ({ community }: Props) => {
             const { data } = await supabase.auth.getUser()
             setCurrentUserId(data.user?.id || null)
         }
+
+        const getPostCount = async () => {
+            const { count, error } = await supabase
+                .from("posts")
+                .select("*", { count: 'exact', head: true })
+                .eq("community_id", community.id)
+
+            if (!error && count !== null) setPostCount(count)
+        }
+
         getSession()
-    }, [])
+        getPostCount()
+    }, [community.id])
 
     const handleDelete = async () => {
         const { error } = await supabase.from("communities").delete().eq("id", community.id)
@@ -65,7 +77,7 @@ export const CommunityItem = ({ community }: Props) => {
                 <motion.div
                     layout
                     transition={springTransition}
-                    className="bg-zinc-900/30 border border-white/5 rounded-xl p-4 h-full backdrop-blur-sm relative overflow-hidden transition-all duration-300 group-hover:scale-[1.01] group-hover:border-pink-600/40"
+                    className="bg-zinc-900/30 border border-white/5 rounded-xl p-4 h-full backdrop-blur-sm relative overflow-hidden transition-all duration-300 group-hover:scale-[1.01] group-hover:border-pink-600/40 flex flex-col"
                 >
                     <div className="flex justify-between items-start mb-4">
                         <div className="flex flex-col">
@@ -98,6 +110,16 @@ export const CommunityItem = ({ community }: Props) => {
                         <p className="text-zinc-500 text-[11px] leading-relaxed line-clamp-2 mb-5">
                             {community.description}
                         </p>
+                    </div>
+
+                    {/* POST COUNT INDICATOR */}
+                    <div className="mb-4 flex items-center gap-2">
+                        <div className="flex items-center gap-1.5 px-2 py-1 bg-white/[0.03] border border-white/5 rounded-md">
+                            <Layers size={10} className="text-zinc-500" />
+                            <span className="text-zinc-400 font-mono text-[9px] font-bold">
+                                {postCount.toString().padStart(2, '0')} <span className="text-zinc-600">Posts</span>
+                            </span>
+                        </div>
                     </div>
 
                     <div className="mt-auto pt-3 border-t border-white/5 flex justify-between items-center">

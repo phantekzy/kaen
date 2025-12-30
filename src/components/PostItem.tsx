@@ -10,7 +10,7 @@ import { UserBadge } from "./UserBadge";
 interface PostItemProps {
     post: Post;
     variant: "list" | "grid";
-    onOpenComments?: (id: number) => void; // New prop to trigger the drawer
+    onOpenComments?: (id: number) => void;
 }
 
 export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
@@ -49,7 +49,7 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
     }, []);
 
     const handleLike = async (e: React.MouseEvent) => {
-        e.preventDefault(); // Stop the <Link> from firing
+        e.preventDefault();
         e.stopPropagation();
         if (!currentUserId) return;
 
@@ -105,11 +105,11 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                         ${isList ? "flex flex-col md:flex-row p-4 gap-6 items-center" : "flex flex-col"}`}
                 >
                     {post.image_url && (
-                        <div className={`${isList ? "w-full md:w-56 shrink-0" : "w-full"} overflow-hidden rounded-xl bg-black/20`}>
+                        <div className={`${isList ? "w-full md:w-56 shrink-0" : "w-full"} aspect-video overflow-hidden rounded-xl bg-black/20`}>
                             <motion.img
                                 layout
                                 src={post.image_url}
-                                className="w-full h-auto block object-contain"
+                                className="w-full h-full block object-cover"
                                 transition={springTransition}
                             />
                         </div>
@@ -141,7 +141,6 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
                             </p>
                         </div>
 
-                        {/* INTERACTION BAR */}
                         <div className="mt-auto flex gap-4 pt-4 pb-2 px-4 border-t border-white/5 font-mono text-[10px] text-zinc-500">
                             <button
                                 onClick={handleLike}
