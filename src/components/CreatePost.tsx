@@ -128,7 +128,7 @@ export const CreatePost = () => {
                             </div>
                             <div className="flex gap-4 pt-4">
                                 <button onClick={() => navigate(`/post/${newPostId}`)} className="flex-1 h-14 bg-white text-black font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-pink-600 hover:text-white transition-all shadow-xl">Show Post</button>
-                                <button onClick={() => navigate("/")} className="flex-1 h-14 bg-zinc-900 text-zinc-400 border border-white/10 font-black uppercase text-[10px] tracking-widest rounded-xl hover:text-white transition-all">Feed</button>
+                                <button onClick={() => navigate("/posts")} className="flex-1 h-14 bg-zinc-900 text-zinc-400 border border-white/10 font-black uppercase text-[10px] tracking-widest rounded-xl hover:text-white transition-all">Feed</button>
                             </div>
                         </motion.div>
                     </motion.div>
