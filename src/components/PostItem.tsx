@@ -42,6 +42,7 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
             const { data } = await supabase.from("votes").select("*").eq("post_id", post.id);
             return data || [];
         },
+        refetchInterval: 5000
     });
 
     const { data: commentsCount = 0 } = useQuery({
@@ -50,6 +51,7 @@ export const PostItem = ({ post, variant, onOpenComments }: PostItemProps) => {
             const { count } = await supabase.from("comments").select("*", { count: "exact", head: true }).eq("post_id", post.id);
             return count || 0;
         },
+        refetchInterval: 5000
     });
 
     const likesCount = votes.filter((v: any) => v.vote === 1).length;
