@@ -15,6 +15,7 @@ import { SelectCreation } from "./pages/SelectCreation";
 import { CreateCommunityPage } from "./pages/CreateCommunityPage";
 import { CommunitiesPage } from "./pages/CommunitiesPage";
 import { CommunityPage } from "./pages/CommunityPage";
+import { SearchResults } from "./pages/SearchResults";
 
 /* App section */
 function App() {
@@ -90,6 +91,14 @@ function App() {
                             element={
                                 <RootLayout>
                                     <CommunityPage />
+                                </RootLayout>
+                            }
+                        />
+                        <Route
+                            path="/search"
+                            element={
+                                <RootLayout>
+                                    <SearchResults />
                                 </RootLayout>
                             }
                         />
