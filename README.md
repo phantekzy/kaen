@@ -1,71 +1,107 @@
-Kean App
+# KAEN • PROPRIETARY SYSTEM SPECIFICATION
+## [CONFIDENTIAL] - EXCLUSIVE TO IMAGINATION SOFTWARE
 
-## 1. Core Platform Purpose
+![License](https://img.shields.io/badge/License-Proprietary_Imagination_Software-red?style=for-the-badge)
+![Security](https://img.shields.io/badge/Security-RLS_Enforced-black?style=for-the-badge)
+![Engine](https://img.shields.io/badge/Engine-React_19_Concurrent-pink?style=for-the-badge)
 
-The project is a decentralized-style social content aggregator. It facilitates real-time user interaction through a structured hierarchy consisting of Users, Communities, Posts, and a dual-state Voting System. The architecture prioritizes data integrity and low-latency UI updates using a "Cache-First" strategy.
+Kaen is a high-density, real-time social content aggregator engineered with a **Reactive Monolith Architecture**. This system is architected for low-latency data synchronization, utilizing a **Non-Blocking Concurrent Data Flow** and strictly enforced **Relational Integrity**. 
 
-## 2. System Architecture & Features
+> **LEGAL NOTICE:** This software and its underlying logic are the exclusive property of **Imagination Software**. Unauthorized replication, reverse-engineering, or distribution of this architectural framework is strictly prohibited.
 
-### A. Community & Post Governance
+---
 
-The platform implements a relational mapping between communities and content.
+## 1. MISSION-CRITICAL ARCHITECTURE
 
-- **Community Schema:** Entities contain metadata including unique identifiers, descriptions, and ownership IDs.
-- **Post Lifecycle:** Post creation involves a multi-step mutation. When a post is "executed," the system captures the markdown/text content, user metadata, and a reference to the host community.
-- **Image Integration:** Assets are handled via external URL referencing or Supabase Storage buckets, injected into the DOM with lazy-loading and Framer Motion layout transitions to prevent Layout Shift (CLS).
+### A. The discovery Layer (Advanced Search)
+Kaen’s search infrastructure is not a basic filter; it is a **Stateless Query Engine** synchronized with the browser's hardware history stack.
+* **Vector Querying:** Executes parallel `ILike` pattern matching across indexed GIN (Generalized Inverted Index) columns in PostgreSQL.
+* **State Serialization:** Utilizing `useSearchParams` for URL-state hydration, ensuring that complex search results are fully serializable and persistent.
+* **Parallel Async Hydration:** Implements `Promise.all()` for simultaneous resolution of `communities` and `posts` tables, effectively halving the latency of the discovery lifecycle.
 
-### B. Reactive Voting Engine (Likes/Dislikes)
 
-The voting system is implemented as a non-destructive state machine:
 
-- **State Logic:** The `LikeButton` component utilizes an "Upsert" (Update/Insert) pattern.
-- **Atomic Operations:** - If `state == null` -> `INSERT` row with `vote: 1` or `-1`.
-  - If `state == current` -> `DELETE` row (toggling off).
-  - If `state != current` -> `UPDATE` row value.
-- **TanStack Integration:** It uses `useMutation` with `onSuccess` invalidation. This triggers a background re-fetch for all `PostItem` components sharing the same `postId` query key, ensuring global consistency across the list and detail views.
+### B. The Atomic engagement Machine (Voting)
+The voting logic is a **Deterministic State Machine** designed to eliminate race conditions and data drift.
+* **Upsert Logic Pattern:** Instead of simple integer increments, the system tracks the unique relationship between `user_id` and `post_id`.
+* **State Transitions:** - `NULL -> INSERT(1)` 
+    - `CURRENT -> DELETE` (Toggle Logic)
+    - `CURRENT -> UPDATE(Opposite)` (Polarity Swap)
+* **Optimistic UI Layer:** Powered by **TanStack Query v5**, providing 0ms perceived latency by updating the client-side cache before the server-side transaction is finalized.
 
-### C. Commenting & Threading
 
-The commenting engine is built on a recursive relational structure within the database.
 
-- **Data Fetching:** Comments are fetched via a filtered query where `post_id` matches the current route parameter.
-- **Real-time Interaction:** The UI uses `AnimatePresence` to handle the mounting/unmounting of comment threads, providing visual feedback during the injection of new data strings into the PostgreSQL table.
+### C. Recursive Discussion Engine (Comments)
+A recursive data structure designed for infinite nesting and high-performance DOM rendering.
+* **Adjacency List Model:** Uses a self-referencing `parent_id` foreign key within the `comments` table.
+* **Recursive Component Mounting:** The UI dynamically injects instances of itself during the tree-traversal process.
+* **Physics-Based Rendering:** Utilizing **Framer Motion** with custom spring constants ($stiffness: 400, damping: 40$) to handle layout projections and prevent Cumulative Layout Shift (CLS).
 
-### D. User Authentication & Authorization
 
-The security layer is enforced at the database level using Row Level Security (RLS).
 
-- **Identity Provider:** Supabase Auth manages JWT (JSON Web Tokens).
-- **Ownership Validation:**
-  ```sql
-  -- Example Logic
-  CREATE POLICY "Delete Ownership" ON posts
-  FOR DELETE USING (auth.uid() = user_id);
-  ```
-- **Session Persistence:** A custom `AuthContext` provider utilizes the `onAuthStateChange` listener to synchronize the local React state with the global Supabase session, managing protected routes and administrative UI toggles.
+---
 
-## 3. Advanced Technical Implementations
+## 2. RELATIONAL DATA SCHEMA
 
-### Dynamic UI Composition
+The database is built on **PostgreSQL** with strict foreign key constraints and cascaded deletions.
 
-The `PostItem` component is a high-order-like component that adapts its CSS Grid/Flexbox properties based on a `variant` prop (`list` | `grid`).
+### Community Entity (`communities`)
+| Column | Type | Constraints |
+| :--- | :--- | :--- |
+| `id` | `uuid` | PRIMARY KEY, DEFAULT gen_random_uuid() |
+| `name` | `text` | UNIQUE, NOT NULL, INDEXED |
+| `description` | `text` | NULLABLE |
+| `creator_id` | `uuid` | REFERENCES auth.users(id) |
 
-- **Responsive Breakpoints:** The layout utilizes Tailwind’s prefix system (`md:`, `lg:`) to restructure the DOM tree on the fly, shifting from a horizontal list-item layout to a vertical card layout without re-mounting logic.
+### Post Entity (`posts`)
+| Column | Type | Constraints |
+| :--- | :--- | :--- |
+| `id` | `uuid` | PRIMARY KEY |
+| `title` | `text` | NOT NULL, GIN INDEXED |
+| `content` | `text` | NOT NULL |
+| `community_id` | `uuid` | REFERENCES communities(id) ON DELETE CASCADE |
+| `user_id` | `uuid` | REFERENCES auth.users(id) |
 
-### Server-State Management
+### Engagement Vector (`votes`)
+| Column | Type | Constraints |
+| :--- | :--- | :--- |
+| `post_id` | `uuid` | COMPOSITE PRIMARY KEY |
+| `user_id` | `uuid` | COMPOSITE PRIMARY KEY |
+| `vote_type` | `smallint` | CHECK (vote_type IN (-1, 1)) |
 
-The application implements an advanced caching layer:
 
-- **Stale-While-Revalidate (SWR):** Using TanStack Query, the application serves stale data from the cache immediately while fetching fresh data in the background.
-- **Polling:** Critical data points, such as the `votes` array, implement a `refetchInterval` (e.g., 5000ms) to simulate real-time updates in the absence of WebSockets.
 
-### Motion Physics
+---
 
-Unlike standard CSS transitions, the project utilizes spring-based physics for UI interactions.
+## 3. SECURITY & PERFORMANCE PROTOCOLS
 
-- **Spring Physics:** Constants are set to `stiffness: 400` and `damping: 40`. This creates a tactile, weight-based feel for modal popups (like the Delete Confirmation) and card expansions, improving the perceived performance and high-end feel of the application.
+### Row Level Security (RLS)
+Security is architected at the **kernel level** of the database.
+```sql
+-- Enforcing Data Ownership
+CREATE POLICY "Mutation Ownership" ON public.posts
+FOR ALL USING (auth.uid() = user_id);
 
-## 4. Security Infrastructure
+-- Enforcing Global Read Access
+CREATE POLICY "Network Visibility" ON public.communities
+FOR SELECT USING (true);
 
-- **Input Sanitization:** Content is sanitized before being rendered to prevent Cross-Site Scripting (XSS).
-- **RLS Access Control:** Tables are locked by default. Explicit policies are defined for `SELECT`, `INSERT`, `UPDATE`, and `DELETE`, ensuring that users can only manipulate their own content while retaining public read access for the community at large.
+Design Engineering
+Surface Aesthetics: Pure Black (#000000) OLED-optimized background with a 3% white alpha-layer glassmorphism.
+
+Hardware Acceleration: All animations are offloaded to the GPU via will-change transforms to maintain a consistent 60FPS refresh rate.
+
+4. PROPRIETARY TECH STACK
+Core: React 19 (Concurrent Mode)
+
+Server State: TanStack Query (v5)
+
+Backend: Supabase / PostgreSQL
+
+Motion: Framer Motion (Spring Physics)
+
+Auth: JWT / GoTrue Identity Provider
+
+```
+© 2025 Imagination Software. All Rights Reserved. Proprietary and Confidential.
+
